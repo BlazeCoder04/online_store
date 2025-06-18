@@ -1,0 +1,23 @@
+services:
+  user:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    depends_on:
+      - user_db
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    ports:
+      - ${POSTGRES_PORT}:5432
+    volumes:
+      - user_db:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+volumes:
+  user_db:
