@@ -1,0 +1,23 @@
+DO$$BEGINIFNOTEXISTS(
+    SELECT
+        1
+    FROM
+        pg_type
+    WHERE
+        typname = 'user_role'
+) THEN EXECUTE'CREATE TYPE user_role AS ENUM ('USER', 'ADMIN');';
+
+ENDIF;
+
+END$$;
+CREATETABLEIFNOTEXISTSusers(
+idUUIDPRIMARYKEYDEFAULTgen_random_uuid(),
+emailTEXTUNIQUENOTNULL,
+passwordTEXTNOTNULL,
+first_nameTEXTNOTNULL,
+last_nameTEXTNOTNULL,
+role user_roleNOTNULLDEFAULT"USER",
+created_atTIMESTAMPDEFAULTNOW(),
+updated_atTIMESTAMPDEFAULTNOW(),
+deleted_atTIMESTAMPNULL
+)
