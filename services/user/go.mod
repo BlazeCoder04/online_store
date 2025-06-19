@@ -2,7 +2,10 @@ module github.com/BlazeCoder04/online_store/services/user
 
 go 1.24.1
 
-require github.com/spf13/viper v1.20.1
+require (
+	github.com/docker/distribution v2.8.3+incompatible
+	github.com/spf13/viper v1.20.1
+)
 
 require (
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
