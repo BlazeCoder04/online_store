@@ -6,8 +6,8 @@ import (
 
 	"github.com/BlazeCoder04/online_store/libs/logger"
 	"github.com/BlazeCoder04/online_store/services/user/configs"
-	domain "github.com/BlazeCoder04/online_store/services/user/internal/domain/auth/ports/repository"
 	"github.com/BlazeCoder04/online_store/services/user/internal/domain/models"
+	domain "github.com/BlazeCoder04/online_store/services/user/internal/domain/ports/auth/repository"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
