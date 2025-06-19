@@ -1,3 +1,3 @@
 package adapters
 
-var ErrZapBuild = "error when building the logger"
+const ErrZapBuild = "error when building the logger"

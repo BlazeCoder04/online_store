@@ -1,3 +1,3 @@
 package jwt
 
-var ErrTokenInvalid = "token.invalid"
+const ErrTokenInvalid = "token.invalid"
