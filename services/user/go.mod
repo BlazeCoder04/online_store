@@ -5,11 +5,14 @@ go 1.24.1
 require (
 	github.com/BlazeCoder04/online_store/libs/logger v0.0.0-20250619140621-0810babdfd6b
 	github.com/docker/distribution v2.8.3+incompatible
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/spf13/viper v1.20.1
 )
 
 require (
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
