@@ -18,8 +18,6 @@ func Create(ttl time.Duration, userID, privateKey string) (string, error) {
 	claims := jwt.MapClaims{
 		"sub": userID,
 		"exp": now.Add(ttl).Unix(),
-		"iat": now.Unix(),
-		"nbf": now.Unix(),
 	}
 
 	token, err := jwt.NewWithClaims(jwt.SigningMethodRS256, claims).SignedString(key)
@@ -30,10 +28,10 @@ func Create(ttl time.Duration, userID, privateKey string) (string, error) {
 	return token, nil
 }
 
-func Validate(token, publicKey string) (string, error) {
+func ParseToken(token string, publicKey string) (jwt.MapClaims, error) {
 	key, err := parse.ParsePublicKey(publicKey)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	parsedToken, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
@@ -44,12 +42,21 @@ func Validate(token, publicKey string) (string, error) {
 		return key, nil
 	})
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	claims, ok := parsedToken.Claims.(jwt.MapClaims)
 	if !ok || !parsedToken.Valid {
-		return "", errors.New(ErrTokenInvalid)
+		return nil, errors.New(ErrTokenInvalid)
+	}
+
+	return claims, nil
+}
+
+func GetUserID(token, publicKey string) (string, error) {
+	claims, err := ParseToken(token, publicKey)
+	if err != nil {
+		return "", err
 	}
 
 	return claims["sub"].(string), nil
