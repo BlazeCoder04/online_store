@@ -129,6 +129,7 @@ func NewAdapter(level domain.Level) (domain.Logger, error) {
 	cfg := zap.NewProductionConfig()
 	cfg.Encoding = "console"
 	cfg.Level = toRouterLevel(level)
+	cfg.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 
 	logger, err := cfg.Build()
 	if err != nil {
