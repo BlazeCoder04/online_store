@@ -4,10 +4,10 @@ go 1.24.1
 
 require (
 	github.com/BlazeCoder04/online_store/libs/hash_password v0.0.0-20250619191323-0ed375ae706a
-	github.com/BlazeCoder04/online_store/libs/jwt v0.0.0-20250619191323-0ed375ae706a
+	github.com/BlazeCoder04/online_store/libs/jwt v0.0.0-20250620210641-5ef1184ac73d
 	github.com/BlazeCoder04/online_store/libs/logger v0.0.0-20250620081409-3651c4d7dcdd
 	github.com/BlazeCoder04/online_store/libs/validate v0.0.0-20250619202527-b1ae8e9ca74d
-	github.com/BlazeCoder04/online_store/protobuf v0.0.0-20250619202527-b1ae8e9ca74d
+	github.com/BlazeCoder04/online_store/protobuf v0.0.0-20250620212408-0f37c3c9c123
 	github.com/docker/distribution v2.8.3+incompatible
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/jackc/pgx/v5 v5.7.5
