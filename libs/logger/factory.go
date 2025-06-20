@@ -1,4 +1,4 @@
-package main
+package logger
 
 import (
 	"github.com/BlazeCoder04/online_store/libs/logger/adapters"
