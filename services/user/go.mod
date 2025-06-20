@@ -5,15 +5,15 @@ go 1.24.1
 require (
 	github.com/BlazeCoder04/online_store/libs/hash_password v0.0.0-20250619191323-0ed375ae706a
 	github.com/BlazeCoder04/online_store/libs/jwt v0.0.0-20250619191323-0ed375ae706a
-	github.com/BlazeCoder04/online_store/libs/logger v0.0.0-20250619140621-0810babdfd6b
+	github.com/BlazeCoder04/online_store/libs/logger v0.0.0-20250620081409-3651c4d7dcdd
 	github.com/BlazeCoder04/online_store/libs/validate v0.0.0-20250619202527-b1ae8e9ca74d
 	github.com/BlazeCoder04/online_store/protobuf v0.0.0-20250619202527-b1ae8e9ca74d
 	github.com/docker/distribution v2.8.3+incompatible
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/spf13/viper v1.20.1
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250603155806-513f23925822
 	google.golang.org/grpc v1.73.0
+	google.golang.org/protobuf v1.36.6
 )
 
 require (
@@ -48,6 +48,6 @@ require (
 	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.26.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20250603155806-513f23925822 // indirect
-	google.golang.org/protobuf v1.36.6 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250603155806-513f23925822 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

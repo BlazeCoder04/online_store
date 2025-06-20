@@ -8,8 +8,8 @@ github.com/BlazeCoder04/online_store/libs/hash_password v0.0.0-20250619191323-0e
 github.com/BlazeCoder04/online_store/libs/hash_password v0.0.0-20250619191323-0ed375ae706a/go.mod h1:bOD2ilQ8o5Ez+q9eSVNddHXjgoX6zKqrgeAvsvzyLS0=
 github.com/BlazeCoder04/online_store/libs/jwt v0.0.0-20250619191323-0ed375ae706a h1:kNrilzShVdBlPw+OIjpZZDZAXEob8dGiOTZq+FubkbA=
 github.com/BlazeCoder04/online_store/libs/jwt v0.0.0-20250619191323-0ed375ae706a/go.mod h1:QUanEj5+zUJwepr12cV3ht9fGaB3Um1l1zbQJfxM7+8=
-github.com/BlazeCoder04/online_store/libs/logger v0.0.0-20250619140621-0810babdfd6b h1:T5vlT4PfHvrYNMcM1ltJ7vnBwU06XqOW1uEvvZjGQgk=
-github.com/BlazeCoder04/online_store/libs/logger v0.0.0-20250619140621-0810babdfd6b/go.mod h1:mg2EcF4zGMqewXRizlfGJ96caZ7eO+F8uxoABEv/7As=
+github.com/BlazeCoder04/online_store/libs/logger v0.0.0-20250620081409-3651c4d7dcdd h1:+PnfLpRqSF9ArH/4yqoRiGEWFGF4+HS3PmdWQp6HxK4=
+github.com/BlazeCoder04/online_store/libs/logger v0.0.0-20250620081409-3651c4d7dcdd/go.mod h1:mg2EcF4zGMqewXRizlfGJ96caZ7eO+F8uxoABEv/7As=
 github.com/BlazeCoder04/online_store/libs/validate v0.0.0-20250619202527-b1ae8e9ca74d h1:jfWZ3v9enVQCKkEeFdKJwOL+Y2nlEh8S2mP7fKv/VbE=
 github.com/BlazeCoder04/online_store/libs/validate v0.0.0-20250619202527-b1ae8e9ca74d/go.mod h1:C19P9MrNPYjtufc5xXoQMmmJ3aIt/wbKf5rZDPQaOfk=
 github.com/BlazeCoder04/online_store/protobuf v0.0.0-20250619202527-b1ae8e9ca74d h1:pjnodITDpLew99dKryH8rbz+TQugDZECmzZrVn9hiVM=
