@@ -8,11 +8,7 @@ import (
 
 type Config struct {
 	ServerEnv  string `mapstructure:"SERVER_ENV"`
-	ServerHost string `mapstructure:"SERVER_HOST"`
 	ServerPort int    `mapstructure:"SERVER_PORT"`
-
-	ReadTimeout  int `mapstructure:"READ_TIMEOUT"`
-	WriteTimeout int `mapstructure:"WRITE_TIMEOUT"`
 
 	PostgresDSN string `mapstructure:"POSTGRES_DSN"`
 
