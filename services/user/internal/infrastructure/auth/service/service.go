@@ -22,7 +22,7 @@ type AuthService struct {
 	cfg       *configs.Config
 }
 
-func NewAuthService(authRepo domainRepo.AuthRepository, tokenRepo domainRepo.TokenRepository, logger logger.Logger, cfg *configs.Config) domainService.AuthService {
+func NewAuthService(authRepo domainRepo.AuthRepository, tokenRepo domainRepo.TokenRepository, logger logger.Logger, cfg *configs.Config) (domainService.AuthService, error) {
 	logger.Info("Initializing auth service")
 	logger.OK("Successful initialization")
 
@@ -31,7 +31,7 @@ func NewAuthService(authRepo domainRepo.AuthRepository, tokenRepo domainRepo.Tok
 		tokenRepo,
 		logger,
 		cfg,
-	}
+	}, nil
 }
 
 func (s *AuthService) generateAndStoreTokens(ctx context.Context, userID string) (string, string, error) {
