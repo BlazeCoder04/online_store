@@ -23,7 +23,7 @@ type AuthHandler struct {
 	cfg         *configs.Config
 }
 
-func NewAuthHandler(authService domain.AuthService, logger logger.Logger, cfg *configs.Config) *AuthHandler {
+func NewAuthHandler(authService domain.AuthService, logger logger.Logger, cfg *configs.Config) (*AuthHandler, error) {
 	logger.Info("Initializing auth handler")
 	logger.OK("Successful initialization")
 
@@ -31,7 +31,7 @@ func NewAuthHandler(authService domain.AuthService, logger logger.Logger, cfg *c
 		authService: authService,
 		logger:      logger,
 		cfg:         cfg,
-	}
+	}, nil
 }
 
 func (h *AuthHandler) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
