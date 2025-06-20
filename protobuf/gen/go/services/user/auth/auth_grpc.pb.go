@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: auth/auth.proto
+// source: services/user/auth/auth.proto
 
 package auth
 
@@ -20,10 +20,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Auth_Login_FullMethodName        = "/auth.Auth/Login"
-	Auth_Register_FullMethodName     = "/auth.Auth/Register"
-	Auth_UpdateTokens_FullMethodName = "/auth.Auth/UpdateTokens"
-	Auth_Logout_FullMethodName       = "/auth.Auth/Logout"
+	Auth_Login_FullMethodName       = "/auth.Auth/Login"
+	Auth_Register_FullMethodName    = "/auth.Auth/Register"
+	Auth_UpdateToken_FullMethodName = "/auth.Auth/UpdateToken"
+	Auth_Logout_FullMethodName      = "/auth.Auth/Logout"
 )
 
 // AuthClient is the client API for Auth service.
@@ -32,7 +32,7 @@ const (
 type AuthClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
-	UpdateTokens(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*UpdateTokensResponse, error)
+	UpdateToken(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*UpdateTokenResponse, error)
 	Logout(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*LogoutResponse, error)
 }
 
@@ -64,10 +64,10 @@ func (c *authClient) Register(ctx context.Context, in *RegisterRequest, opts ...
 	return out, nil
 }
 
-func (c *authClient) UpdateTokens(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*UpdateTokensResponse, error) {
+func (c *authClient) UpdateToken(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*UpdateTokenResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UpdateTokensResponse)
-	err := c.cc.Invoke(ctx, Auth_UpdateTokens_FullMethodName, in, out, cOpts...)
+	out := new(UpdateTokenResponse)
+	err := c.cc.Invoke(ctx, Auth_UpdateToken_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +90,7 @@ func (c *authClient) Logout(ctx context.Context, in *emptypb.Empty, opts ...grpc
 type AuthServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
-	UpdateTokens(context.Context, *emptypb.Empty) (*UpdateTokensResponse, error)
+	UpdateToken(context.Context, *emptypb.Empty) (*UpdateTokenResponse, error)
 	Logout(context.Context, *emptypb.Empty) (*LogoutResponse, error)
 	mustEmbedUnimplementedAuthServer()
 }
@@ -108,8 +108,8 @@ func (UnimplementedAuthServer) Login(context.Context, *LoginRequest) (*LoginResp
 func (UnimplementedAuthServer) Register(context.Context, *RegisterRequest) (*RegisterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
-func (UnimplementedAuthServer) UpdateTokens(context.Context, *emptypb.Empty) (*UpdateTokensResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateTokens not implemented")
+func (UnimplementedAuthServer) UpdateToken(context.Context, *emptypb.Empty) (*UpdateTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateToken not implemented")
 }
 func (UnimplementedAuthServer) Logout(context.Context, *emptypb.Empty) (*LogoutResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
@@ -171,20 +171,20 @@ func _Auth_Register_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Auth_UpdateTokens_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Auth_UpdateToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServer).UpdateTokens(ctx, in)
+		return srv.(AuthServer).UpdateToken(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Auth_UpdateTokens_FullMethodName,
+		FullMethod: Auth_UpdateToken_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServer).UpdateTokens(ctx, req.(*emptypb.Empty))
+		return srv.(AuthServer).UpdateToken(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -223,8 +223,8 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Auth_Register_Handler,
 		},
 		{
-			MethodName: "UpdateTokens",
-			Handler:    _Auth_UpdateTokens_Handler,
+			MethodName: "UpdateToken",
+			Handler:    _Auth_UpdateToken_Handler,
 		},
 		{
 			MethodName: "Logout",
@@ -232,5 +232,5 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "auth/auth.proto",
+	Metadata: "services/user/auth/auth.proto",
 }

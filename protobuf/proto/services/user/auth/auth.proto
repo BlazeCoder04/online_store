@@ -37,9 +37,9 @@ service Auth {
       body: "*"
     };
   }
-  rpc UpdateTokens(google.protobuf.Empty) returns (UpdateTokensResponse) {
+  rpc UpdateToken(google.protobuf.Empty) returns (UpdateTokenResponse) {
     option (google.api.http) = {
-      post: "/v1/auth/tokens"
+      post: "/v1/auth/token"
       body: "*"
     };
   }
@@ -77,8 +77,8 @@ message RegisterResponse {
   string access_token = 3;
 }
 
-// UpdateTokens
-message UpdateTokensResponse {
+// UpdateToken
+message UpdateTokenResponse {
   string status = 1;
   string access_token = 2;
 }
