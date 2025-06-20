@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"strings"
+	"time"
 
 	hashPassword "github.com/BlazeCoder04/online_store/libs/hash_password"
 	"github.com/BlazeCoder04/online_store/libs/jwt"
@@ -99,31 +100,39 @@ func (s *AuthService) Register(ctx context.Context, email, password, firstName, 
 	return user, accessToken, refreshToken, nil
 }
 
-func (s *AuthService) UpdateTokens(ctx context.Context, refreshToken string) (string, string, error) {
-	userID, err := jwt.Validate(refreshToken, s.cfg.RefreshTokenPublicKey)
+func (s *AuthService) UpdateToken(ctx context.Context, accessToken, refreshToken string) (string, error) {
+	userID, err := jwt.GetUserID(refreshToken, s.cfg.RefreshTokenPublicKey)
 	if err != nil {
-		return "", "", errors.New(ErrTokenInvalid)
+		return "", errors.New(ErrTokenInvalid)
 	}
 
 	storedRefreshToken, err := s.tokenRepo.Get(ctx, userID)
 	if err != nil {
-		return "", "", errors.New(ErrTokenNotFound)
+		return "", errors.New(ErrTokenNotFound)
 	}
 
 	if storedRefreshToken != refreshToken {
-		return "", "", errors.New(ErrTokenInvalid)
+		return "", errors.New(ErrTokenInvalid)
 	}
 
-	newAccessToken, newRefreshToken, err := s.generateAndStoreTokens(ctx, userID)
+	now := time.Now()
+
+	accessTokenClaims, err := jwt.ParseToken(accessToken, s.cfg.AccessTokenPublicKey)
 	if err != nil {
-		return "", "", err
+		return "", errors.New(ErrTokenInvalid)
+	}
+	accessTokenClaims["exp"] = now
+
+	newAccessToken, err := jwt.Create(s.cfg.AccessTokenExpiresIn, userID, s.cfg.AccessTokenPrivateKey)
+	if err != nil {
+		return "", err
 	}
 
-	return newAccessToken, newRefreshToken, nil
+	return newAccessToken, nil
 }
 
 func (s *AuthService) Logout(ctx context.Context, accessToken string) error {
-	userID, err := jwt.Validate(accessToken, s.cfg.AccessTokenPublicKey)
+	userID, err := jwt.GetUserID(accessToken, s.cfg.AccessTokenPublicKey)
 	if err != nil {
 		return errors.New(ErrTokenInvalid)
 	}
@@ -133,13 +142,27 @@ func (s *AuthService) Logout(ctx context.Context, accessToken string) error {
 		return errors.New(ErrTokenNotFound)
 	}
 
-	if _, err = jwt.Validate(refreshToken, s.cfg.RefreshTokenPublicKey); err != nil {
+	if _, err = jwt.GetUserID(refreshToken, s.cfg.RefreshTokenPublicKey); err != nil {
 		return errors.New(ErrTokenInvalid)
 	}
 
 	if err = s.tokenRepo.Delete(ctx, userID); err != nil {
 		return err
 	}
+
+	now := time.Now()
+
+	accessTokenClaims, err := jwt.ParseToken(accessToken, s.cfg.AccessTokenPublicKey)
+	if err != nil {
+		return errors.New(ErrTokenInvalid)
+	}
+	accessTokenClaims["exp"] = now
+
+	refreshTokenClaims, err := jwt.ParseToken(refreshToken, s.cfg.RefreshTokenPublicKey)
+	if err != nil {
+		return errors.New(ErrTokenInvalid)
+	}
+	refreshTokenClaims["exp"] = now
 
 	return nil
 }

@@ -5,7 +5,7 @@ import (
 	"net"
 
 	"github.com/BlazeCoder04/online_store/libs/logger"
-	pb "github.com/BlazeCoder04/online_store/protobuf/gen/go/auth"
+	pb "github.com/BlazeCoder04/online_store/protobuf/gen/go/services/user/auth"
 	"github.com/BlazeCoder04/online_store/services/user/configs"
 	"github.com/BlazeCoder04/online_store/services/user/internal/domain"
 	"github.com/BlazeCoder04/online_store/services/user/internal/interfaces/http/auth/handlers"

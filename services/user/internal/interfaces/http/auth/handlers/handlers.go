@@ -5,7 +5,7 @@ import (
 
 	"github.com/BlazeCoder04/online_store/libs/logger"
 	"github.com/BlazeCoder04/online_store/libs/validate"
-	pb "github.com/BlazeCoder04/online_store/protobuf/gen/go/auth"
+	pb "github.com/BlazeCoder04/online_store/protobuf/gen/go/services/user/auth"
 	"github.com/BlazeCoder04/online_store/services/user/configs"
 	domain "github.com/BlazeCoder04/online_store/services/user/internal/domain/ports/auth/service"
 	"google.golang.org/grpc"
@@ -106,7 +106,7 @@ func (h *AuthHandler) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 	}, nil
 }
 
-func (h *AuthHandler) UpdateTokens(ctx context.Context, _ *emptypb.Empty) (*pb.UpdateTokensResponse, error) {
+func (h *AuthHandler) UpdateToken(ctx context.Context, _ *emptypb.Empty) (*pb.UpdateTokenResponse, error) {
 	md, _ := metadata.FromIncomingContext(ctx)
 
 	token := md.Get("refresh_token")
@@ -115,13 +115,18 @@ func (h *AuthHandler) UpdateTokens(ctx context.Context, _ *emptypb.Empty) (*pb.U
 	}
 	refreshToken := token[0]
 
-	newAccessToken, newRefreshToken, err := h.authService.UpdateTokens(ctx, refreshToken)
+	token = md.Get("access_token")
+	if len(token) == 0 {
+		return nil, status.Error(codes.Unauthenticated, ErrUserUnauthorized)
+	}
+	accessToken := token[0]
+
+	newAccessToken, err := h.authService.UpdateToken(ctx, accessToken, refreshToken)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	md = metadata.Pairs(
-		"refresh_token", newRefreshToken,
 		"access_token", newAccessToken,
 	)
 
@@ -131,7 +136,7 @@ func (h *AuthHandler) UpdateTokens(ctx context.Context, _ *emptypb.Empty) (*pb.U
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &pb.UpdateTokensResponse{
+	return &pb.UpdateTokenResponse{
 		Status:      "success",
 		AccessToken: newAccessToken,
 	}, nil
