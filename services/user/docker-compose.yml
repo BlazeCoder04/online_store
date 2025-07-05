@@ -1,0 +1,59 @@
+services:
+    postgres:
+        container_name: postgres
+        image: postgres:17-alpine
+        ports:
+            - ${POSTGRES_PORT}:5432
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+            PGDATA: ${PG_DATA}
+        volumes:
+            - user_pgdata:${PG_DATA}
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        restart: unless-stopped
+        networks:
+            - user_network
+
+    redis:
+        container_name: redis
+        image: redis:7-alpine
+        ports:
+            - ${REDIS_PORT}:6379
+        environment:
+            REDIS_PASSWORD: ${REDIS_PASSWORD}
+        volumes:
+            - user_redisdata:${REDIS_DATA}
+        command:
+            [
+                "redis-server",
+                "--appendonly yes",
+                "--appendfsync everysec",
+                "--save 900 1",
+                "--save 300 10",
+                "--save 60 10000",
+                "--requirepass ${REDIS_PASSWORD}",
+            ]
+        healthcheck:
+            test: ["CMD", "redis-cli -a $[REDIS_PASSWORD} ping"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        restart: unless-stopped
+        networks:
+            - user_network
+
+volumes:
+    user_pgdata:
+        driver: local
+    user_redisdata:
+        driver: local
+
+networks:
+    user_network:
+        driver: bridge
