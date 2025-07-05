@@ -65,7 +65,7 @@ func (z *ZapAdapter) Debug(msg string, fields ...domain.Field) {
 }
 
 func (z *ZapAdapter) Info(msg string, fields ...domain.Field) {
-	z.log(zap.InfoLevel, msg, fields, colorise.ColorLightGreen)
+	z.log(zap.InfoLevel, msg, fields, colorise.ColorGreen)
 }
 
 func (z *ZapAdapter) Warn(msg string, fields ...domain.Field) {
@@ -78,10 +78,6 @@ func (z *ZapAdapter) Error(msg string, fields ...domain.Field) {
 
 func (z *ZapAdapter) Fatal(msg string, fields ...domain.Field) {
 	z.log(zap.FatalLevel, msg, fields, colorise.ColorRed)
-}
-
-func (z *ZapAdapter) OK(msg string, fields ...domain.Field) {
-	z.log(zap.InfoLevel, msg, fields, colorise.ColorGreen)
 }
 
 func (z *ZapAdapter) WithFields(fields ...domain.Field) domain.Logger {
