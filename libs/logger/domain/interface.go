@@ -40,7 +40,6 @@ type Logger interface {
 	Warn(msg string, fields ...Field)
 	Error(msg string, fields ...Field)
 	Fatal(msg string, fields ...Field)
-	OK(msg string, fields ...Field)
 	WithFields(fields ...Field) Logger
 	WithLayer(name string) Logger
 }
