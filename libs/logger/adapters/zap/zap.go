@@ -2,6 +2,7 @@ package adapters
 
 import (
 	"errors"
+	"fmt"
 	"sync"
 
 	"github.com/BlazeCoder04/online_store/libs/logger/domain"
@@ -60,24 +61,24 @@ func (z *ZapAdapter) log(level zapcore.Level, msg string, fields []domain.Field,
 	}
 }
 
-func (z *ZapAdapter) Debug(msg string, fields ...domain.Field) {
-	z.log(zap.DebugLevel, msg, fields, colorise.ColorReset)
+func (z *ZapAdapter) Debug(tag, msg string, fields ...domain.Field) {
+	z.log(zap.DebugLevel, fmt.Sprintf("[%s] %s", tag, msg), fields, colorise.ColorReset)
 }
 
-func (z *ZapAdapter) Info(msg string, fields ...domain.Field) {
-	z.log(zap.InfoLevel, msg, fields, colorise.ColorGreen)
+func (z *ZapAdapter) Info(tag, msg string, fields ...domain.Field) {
+	z.log(zap.InfoLevel, fmt.Sprintf("[%s] %s", tag, msg), fields, colorise.ColorGreen)
 }
 
-func (z *ZapAdapter) Warn(msg string, fields ...domain.Field) {
-	z.log(zap.WarnLevel, msg, fields, colorise.ColorYellow)
+func (z *ZapAdapter) Warn(tag, msg string, fields ...domain.Field) {
+	z.log(zap.WarnLevel, fmt.Sprintf("[%s] %s", tag, msg), fields, colorise.ColorYellow)
 }
 
-func (z *ZapAdapter) Error(msg string, fields ...domain.Field) {
-	z.log(zap.ErrorLevel, msg, fields, colorise.ColorOrange)
+func (z *ZapAdapter) Error(tag, msg string, fields ...domain.Field) {
+	z.log(zap.ErrorLevel, fmt.Sprintf("[%s] %s", tag, msg), fields, colorise.ColorOrange)
 }
 
-func (z *ZapAdapter) Fatal(msg string, fields ...domain.Field) {
-	z.log(zap.FatalLevel, msg, fields, colorise.ColorRed)
+func (z *ZapAdapter) Fatal(tag, msg string, fields ...domain.Field) {
+	z.log(zap.FatalLevel, fmt.Sprintf("[%s] %s", tag, msg), fields, colorise.ColorRed)
 }
 
 func (z *ZapAdapter) WithFields(fields ...domain.Field) domain.Logger {
@@ -90,17 +91,6 @@ func (z *ZapAdapter) WithFields(fields ...domain.Field) domain.Logger {
 		logger:    z.logger,
 		fields:    append(zapFields, z.fields...),
 		formatter: z.formatter,
-	}
-}
-
-func (z *ZapAdapter) WithLayer(name string) domain.Logger {
-	z.mu.RLock()
-	defer z.mu.RUnlock()
-
-	return &ZapAdapter{
-		logger:    z.logger,
-		fields:    z.fields,
-		formatter: formatter.NewFormatter(name),
 	}
 }
 
@@ -126,6 +116,7 @@ func NewAdapter(level domain.Level) (domain.Logger, error) {
 	cfg.Encoding = "console"
 	cfg.Level = toRouterLevel(level)
 	cfg.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	cfg.EncoderConfig.CallerKey = ""
 
 	logger, err := cfg.Build()
 	if err != nil {
