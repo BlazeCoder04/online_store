@@ -35,13 +35,12 @@ func (l Level) String() string {
 }
 
 type Logger interface {
-	Debug(msg string, fields ...Field)
-	Info(msg string, fields ...Field)
-	Warn(msg string, fields ...Field)
-	Error(msg string, fields ...Field)
-	Fatal(msg string, fields ...Field)
+	Debug(tag, msg string, fields ...Field)
+	Info(tag, msg string, fields ...Field)
+	Warn(tag, msg string, fields ...Field)
+	Error(tag, msg string, fields ...Field)
+	Fatal(tag, msg string, fields ...Field)
 	WithFields(fields ...Field) Logger
-	WithLayer(name string) Logger
 }
 
 func String(msg, value string) Field {
