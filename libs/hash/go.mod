@@ -1,4 +1,4 @@
-module github.com/BlazeCoder04/online_store/libs/hash_password
+module github.com/BlazeCoder04/online_store/libs/hash
 
 go 1.24.4
 
