@@ -10,7 +10,8 @@ type Config struct {
 	ServerEnv  string `mapstructure:"SERVER_ENV"`
 	ServerPort string `mapstructure:"SERVER_PORT"`
 
-	PostgresDSN string `mapstructure:"POSTGRES_DSN"`
+	PostgresDSN          string `mapstructure:"POSTGRES_DSN"`
+	PostgresMigrationDSN string `mapstructure:"POSTGRES_MIGRATION_DSN"`
 
 	RedisPassword string `mapstructure:"REDIS_PASSWORD"`
 	RedisURI      string `mapstructure:"REDIS_URI"`
