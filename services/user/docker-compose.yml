@@ -48,6 +48,22 @@ services:
         networks:
             - user_network
 
+    server:
+        container_name: server
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - ${SERVER_PORT}:8081
+        depends_on:
+            postgres:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+        restart: unless-stopped
+        networks:
+            - user_network
+
 volumes:
     user_pgdata:
         driver: local
