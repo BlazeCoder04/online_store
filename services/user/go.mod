@@ -5,7 +5,7 @@ go 1.24.4
 require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.6-20250625184727-c923a0c2a132.1
 	github.com/BlazeCoder04/online_store/libs/hash v0.0.0-20250706135847-73c62cd8c445
-	github.com/BlazeCoder04/online_store/libs/jwt v0.0.0-20250706134233-18df3e52cbee
+	github.com/BlazeCoder04/online_store/libs/jwt v0.0.0-20250707131706-1f7778110c25
 	github.com/BlazeCoder04/online_store/libs/logger v0.0.0-20250705213821-fae52fea882c
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang-migrate/migrate/v4 v4.18.3
