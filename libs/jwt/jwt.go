@@ -8,7 +8,7 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-const ErrTokenInvalid = "token.invalid"
+var ErrTokenInvalid = errors.New("token.invalid")
 
 func Create(ttl time.Duration, userID, userRole, privateKey string) (string, error) {
 	key, err := parse.ParsePrivateKey(privateKey)
@@ -49,7 +49,7 @@ func Verify(token string, publicKey string) (jwt.MapClaims, error) {
 
 	claims, ok := parsedToken.Claims.(jwt.MapClaims)
 	if !ok || !parsedToken.Valid {
-		return nil, errors.New(ErrTokenInvalid)
+		return nil, ErrTokenInvalid
 	}
 
 	return claims, nil
