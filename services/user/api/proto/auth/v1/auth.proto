@@ -8,6 +8,7 @@ import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 
 service AuthV1 {
 	rpc Login(LoginRequest) returns (LoginResponse) {
@@ -28,7 +29,7 @@ service AuthV1 {
 			body: "*"
 		};
 	}
-	rpc Logout(LogoutRequest) returns (LogoutResponse) {
+	rpc Logout(LogoutRequest) returns (google.protobuf.Empty) {
 		option (google.api.http) = {
 			post: "/v1/auth/logout"
 			body: "*"
@@ -58,21 +59,21 @@ message LoginRequest {
 }
 
 message LoginResponse {
-	string status = 1;
-	User data = 2;
-	string access_token = 3;
+	User data = 1;
+	string access_token = 2;
 }
 
 // Register
 message RegisterRequest {
 	string email = 1 [(buf.validate.field).string.email = true];
 	string password = 2 [(buf.validate.field).string.min_len = 6];
+	string first_name = 3 [(buf.validate.field).string.min_len = 3];
+	string last_name = 4 [(buf.validate.field).string.min_len = 3];
 }
 
 message RegisterResponse {
-	string status = 1;
-	User data = 2;
-	string access_token = 3;
+	User data = 1;
+	string access_token = 2;
 }
 
 // RefreshToken
@@ -81,15 +82,10 @@ message RefreshTokenRequest {
 }
 
 message RefreshTokenResponse {
-	string status = 1;
-	string access_token = 2;
+	string access_token = 1;
 }
 
 // Logout
 message LogoutRequest {
 	string access_token = 1;
-}
-
-message LogoutResponse {
-	string status = 1;
 }
