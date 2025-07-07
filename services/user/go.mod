@@ -4,6 +4,7 @@ go 1.24.4
 
 require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.6-20250625184727-c923a0c2a132.1
+	github.com/BlazeCoder04/online_store/libs/hash v0.0.0-20250706135847-73c62cd8c445
 	github.com/BlazeCoder04/online_store/libs/jwt v0.0.0-20250706134233-18df3e52cbee
 	github.com/BlazeCoder04/online_store/libs/logger v0.0.0-20250705213821-fae52fea882c
 	github.com/go-redis/redis/v8 v8.11.5
@@ -39,10 +40,10 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/crypto v0.37.0 // indirect
+	golang.org/x/crypto v0.39.0 // indirect
 	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/sync v0.15.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.26.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250603155806-513f23925822 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
