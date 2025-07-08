@@ -14,7 +14,7 @@ const (
 )
 
 func main() {
-	cfg, err := configs.Load(".")
+	cfg, err := configs.Load()
 	if err != nil {
 		log.Fatalf("[%s] Error during initialization of config: %v", loggerTag, err)
 	}

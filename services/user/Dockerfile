@@ -20,8 +20,6 @@ COPY --from=build /app/server .
 
 COPY --from=build /app/migrations ./migrations
 
-COPY --from=build /app/.env ./.env
-
 RUN chown -R appuser:appgroup /app
 
 USER appuser

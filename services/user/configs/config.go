@@ -25,14 +25,8 @@ type Config struct {
 	RefreshTokenExpiresIn  time.Duration `mapstructure:"REFRESH_TOKEN_EXPIRES_IN"`
 }
 
-func Load(path string) (config Config, err error) {
-	viper.AddConfigPath(path)
-	viper.SetConfigName(".env")
-	viper.SetConfigType("env")
-
-	if err = viper.ReadInConfig(); err != nil {
-		return
-	}
+func Load() (config Config, err error) {
+	viper.AutomaticEnv()
 
 	if err = viper.Unmarshal(&config); err != nil {
 		return
