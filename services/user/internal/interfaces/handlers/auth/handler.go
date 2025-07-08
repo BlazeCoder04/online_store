@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/BlazeCoder04/online_store/libs/logger"
@@ -46,7 +47,14 @@ func (h *AuthHandler) Login(ctx context.Context, req *desc.LoginRequest) (*desc.
 
 	user, accessToken, refreshToken, err := h.authService.Login(ctx, req.Email, req.Password)
 	if err != nil {
-		return nil, status.Error(codes.Unauthenticated, err.Error())
+		switch {
+		case errors.Is(err, ErrUserNotFound):
+			return nil, status.Error(codes.NotFound, err.Error())
+		case errors.Is(err, ErrPasswordWrong):
+			return nil, status.Error(codes.Unauthenticated, err.Error())
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
 	}
 
 	if err := grpc.SendHeader(ctx, metadata.Pairs(
@@ -73,7 +81,12 @@ func (h *AuthHandler) Register(ctx context.Context, req *desc.RegisterRequest) (
 
 	user, accessToken, refreshToken, err := h.authService.Register(ctx, req.Email, req.Password, req.FirstName, req.LastName)
 	if err != nil {
-		return nil, status.Error(codes.Canceled, err.Error())
+		switch {
+		case errors.Is(err, ErrUserExists):
+			return nil, status.Error(codes.AlreadyExists, err.Error())
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
 	}
 
 	if err := grpc.SendHeader(ctx, metadata.Pairs(
@@ -100,7 +113,14 @@ func (h *AuthHandler) RefreshToken(ctx context.Context, req *desc.RefreshTokenRe
 
 	accessToken, err := h.authService.RefreshToken(ctx, req.RefreshToken)
 	if err != nil {
-		return nil, status.Error(codes.Unauthenticated, err.Error())
+		switch {
+		case errors.Is(err, ErrUserNotFound):
+			return nil, status.Error(codes.NotFound, err.Error())
+		case errors.Is(err, ErrTokenInvalid):
+			return nil, status.Error(codes.Unauthenticated, err.Error())
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
 	}
 
 	if err := grpc.SendHeader(ctx, metadata.Pairs(
@@ -123,7 +143,12 @@ func (h *AuthHandler) Logout(ctx context.Context, req *desc.LogoutRequest) (*emp
 
 	err := h.authService.Logout(ctx, req.AccessToken)
 	if err != nil {
-		return nil, status.Error(codes.Canceled, err.Error())
+		switch {
+		case errors.Is(err, ErrTokenInvalid):
+			return nil, status.Error(codes.Unauthenticated, err.Error())
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
 	}
 
 	return &emptypb.Empty{}, nil
