@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/BlazeCoder04/online_store/libs/logger"
 	"github.com/BlazeCoder04/online_store/libs/validate"
@@ -24,6 +25,8 @@ type AuthHandler struct {
 	logger      logger.Logger
 	cfg         *configs.Config
 }
+
+const authPrefix = "Bearer "
 
 func NewAuthHandler(authService domain.AuthService, logger logger.Logger, cfg *configs.Config) (*AuthHandler, error) {
 	loggerTag := "auth.handler.newAuthHandler"
@@ -136,12 +139,24 @@ func (h *AuthHandler) RefreshToken(ctx context.Context, req *desc.RefreshTokenRe
 	}, nil
 }
 
-func (h *AuthHandler) Logout(ctx context.Context, req *desc.LogoutRequest) (*emptypb.Empty, error) {
-	if err := validate.ValidateRequest(req); err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
+func (h *AuthHandler) Logout(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, status.Error(codes.Unauthenticated, "metedata.not_provided")
 	}
 
-	err := h.authService.Logout(ctx, req.AccessToken)
+	authHeader, ok := md["authorization"]
+	if !ok || len(authHeader) == 0 {
+		return nil, status.Error(codes.Unauthenticated, "header.not_provided")
+	}
+
+	if !strings.HasPrefix(authHeader[0], authPrefix) {
+		return nil, status.Error(codes.Unauthenticated, "token.invalid")
+	}
+
+	accessToken := strings.TrimPrefix(authHeader[0], authPrefix)
+
+	err := h.authService.Logout(ctx, accessToken)
 	if err != nil {
 		switch {
 		case errors.Is(err, ErrTokenInvalid):
