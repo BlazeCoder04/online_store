@@ -478,56 +478,11 @@ func (x *RefreshTokenResponse) GetAccessToken() string {
 	return ""
 }
 
-// Logout
-type LogoutRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	AccessToken   string                 `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *LogoutRequest) Reset() {
-	*x = LogoutRequest{}
-	mi := &file_auth_v1_auth_proto_msgTypes[7]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *LogoutRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*LogoutRequest) ProtoMessage() {}
-
-func (x *LogoutRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_v1_auth_proto_msgTypes[7]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use LogoutRequest.ProtoReflect.Descriptor instead.
-func (*LogoutRequest) Descriptor() ([]byte, []int) {
-	return file_auth_v1_auth_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *LogoutRequest) GetAccessToken() string {
-	if x != nil {
-		return x.AccessToken
-	}
-	return ""
-}
-
 var File_auth_v1_auth_proto protoreflect.FileDescriptor
 
 const file_auth_v1_auth_proto_rawDesc = "" +
 	"\n" +
-	"\x12auth/v1/auth.proto\x12\aauth_v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"\x85\x02\n" +
+	"\x12auth/v1/auth.proto\x12\aauth_v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x85\x02\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1d\n" +
@@ -557,8 +512,6 @@ const file_auth_v1_auth_proto_rawDesc = "" +
 	"\x13RefreshTokenRequest\x12#\n" +
 	"\rrefresh_token\x18\x01 \x01(\tR\frefreshToken\"9\n" +
 	"\x14RefreshTokenResponse\x12!\n" +
-	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\"2\n" +
-	"\rLogoutRequest\x12!\n" +
 	"\faccess_token\x18\x01 \x01(\tR\vaccessToken*\x1f\n" +
 	"\bUserRole\x12\b\n" +
 	"\x04USER\x10\x00\x12\t\n" +
@@ -567,7 +520,7 @@ const file_auth_v1_auth_proto_rawDesc = "" +
 	"\x05Login\x12\x15.auth_v1.LoginRequest\x1a\x16.auth_v1.LoginResponse\"\x19\x82\xd3\xe4\x93\x02\x13:\x01*\"\x0e/v1/auth/login\x12]\n" +
 	"\bRegister\x12\x18.auth_v1.RegisterRequest\x1a\x19.auth_v1.RegisterResponse\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*\"\x11/v1/auth/register\x12h\n" +
 	"\fRefreshToken\x12\x1c.auth_v1.RefreshTokenRequest\x1a\x1d.auth_v1.RefreshTokenResponse\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/v1/auth/refresh\x12T\n" +
-	"\x06Logout\x12\x16.auth_v1.LogoutRequest\x1a\x16.google.protobuf.Empty\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/v1/auth/logoutBHZFgithub.com/BlazeCoder04/online_store/services/user/pkg/auth/v1;auth_v1b\x06proto3"
+	"\x06Logout\x12\x16.google.protobuf.Empty\x1a\x16.google.protobuf.Empty\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/v1/auth/logoutBHZFgithub.com/BlazeCoder04/online_store/services/user/pkg/auth/v1;auth_v1b\x06proto3"
 
 var (
 	file_auth_v1_auth_proto_rawDescOnce sync.Once
@@ -582,7 +535,7 @@ func file_auth_v1_auth_proto_rawDescGZIP() []byte {
 }
 
 var file_auth_v1_auth_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_auth_v1_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_auth_v1_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_auth_v1_auth_proto_goTypes = []any{
 	(UserRole)(0),                 // 0: auth_v1.UserRole
 	(*User)(nil),                  // 1: auth_v1.User
@@ -592,29 +545,28 @@ var file_auth_v1_auth_proto_goTypes = []any{
 	(*RegisterResponse)(nil),      // 5: auth_v1.RegisterResponse
 	(*RefreshTokenRequest)(nil),   // 6: auth_v1.RefreshTokenRequest
 	(*RefreshTokenResponse)(nil),  // 7: auth_v1.RefreshTokenResponse
-	(*LogoutRequest)(nil),         // 8: auth_v1.LogoutRequest
-	(*timestamppb.Timestamp)(nil), // 9: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),         // 10: google.protobuf.Empty
+	(*timestamppb.Timestamp)(nil), // 8: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),         // 9: google.protobuf.Empty
 }
 var file_auth_v1_auth_proto_depIdxs = []int32{
-	0,  // 0: auth_v1.User.role:type_name -> auth_v1.UserRole
-	9,  // 1: auth_v1.User.created_at:type_name -> google.protobuf.Timestamp
-	9,  // 2: auth_v1.User.updated_at:type_name -> google.protobuf.Timestamp
-	1,  // 3: auth_v1.LoginResponse.data:type_name -> auth_v1.User
-	1,  // 4: auth_v1.RegisterResponse.data:type_name -> auth_v1.User
-	2,  // 5: auth_v1.AuthV1.Login:input_type -> auth_v1.LoginRequest
-	4,  // 6: auth_v1.AuthV1.Register:input_type -> auth_v1.RegisterRequest
-	6,  // 7: auth_v1.AuthV1.RefreshToken:input_type -> auth_v1.RefreshTokenRequest
-	8,  // 8: auth_v1.AuthV1.Logout:input_type -> auth_v1.LogoutRequest
-	3,  // 9: auth_v1.AuthV1.Login:output_type -> auth_v1.LoginResponse
-	5,  // 10: auth_v1.AuthV1.Register:output_type -> auth_v1.RegisterResponse
-	7,  // 11: auth_v1.AuthV1.RefreshToken:output_type -> auth_v1.RefreshTokenResponse
-	10, // 12: auth_v1.AuthV1.Logout:output_type -> google.protobuf.Empty
-	9,  // [9:13] is the sub-list for method output_type
-	5,  // [5:9] is the sub-list for method input_type
-	5,  // [5:5] is the sub-list for extension type_name
-	5,  // [5:5] is the sub-list for extension extendee
-	0,  // [0:5] is the sub-list for field type_name
+	0, // 0: auth_v1.User.role:type_name -> auth_v1.UserRole
+	8, // 1: auth_v1.User.created_at:type_name -> google.protobuf.Timestamp
+	8, // 2: auth_v1.User.updated_at:type_name -> google.protobuf.Timestamp
+	1, // 3: auth_v1.LoginResponse.data:type_name -> auth_v1.User
+	1, // 4: auth_v1.RegisterResponse.data:type_name -> auth_v1.User
+	2, // 5: auth_v1.AuthV1.Login:input_type -> auth_v1.LoginRequest
+	4, // 6: auth_v1.AuthV1.Register:input_type -> auth_v1.RegisterRequest
+	6, // 7: auth_v1.AuthV1.RefreshToken:input_type -> auth_v1.RefreshTokenRequest
+	9, // 8: auth_v1.AuthV1.Logout:input_type -> google.protobuf.Empty
+	3, // 9: auth_v1.AuthV1.Login:output_type -> auth_v1.LoginResponse
+	5, // 10: auth_v1.AuthV1.Register:output_type -> auth_v1.RegisterResponse
+	7, // 11: auth_v1.AuthV1.RefreshToken:output_type -> auth_v1.RefreshTokenResponse
+	9, // 12: auth_v1.AuthV1.Logout:output_type -> google.protobuf.Empty
+	9, // [9:13] is the sub-list for method output_type
+	5, // [5:9] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_auth_v1_auth_proto_init() }
@@ -628,7 +580,7 @@ func file_auth_v1_auth_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_auth_v1_auth_proto_rawDesc), len(file_auth_v1_auth_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   8,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

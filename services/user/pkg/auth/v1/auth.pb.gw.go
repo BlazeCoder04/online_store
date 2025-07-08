@@ -22,6 +22,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 // Suppress "imported and not used" errors
@@ -118,7 +119,7 @@ func local_request_AuthV1_RefreshToken_0(ctx context.Context, marshaler runtime.
 
 func request_AuthV1_Logout_0(ctx context.Context, marshaler runtime.Marshaler, client AuthV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq LogoutRequest
+		protoReq emptypb.Empty
 		metadata runtime.ServerMetadata
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
@@ -133,7 +134,7 @@ func request_AuthV1_Logout_0(ctx context.Context, marshaler runtime.Marshaler, c
 
 func local_request_AuthV1_Logout_0(ctx context.Context, marshaler runtime.Marshaler, server AuthV1Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq LogoutRequest
+		protoReq emptypb.Empty
 		metadata runtime.ServerMetadata
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
