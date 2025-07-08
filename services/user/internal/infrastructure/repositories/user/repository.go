@@ -18,7 +18,7 @@ type UserRepository struct {
 }
 
 func NewUserRepository(repoLogger logger.Logger, cfg *configs.Config) (domain.UserRepository, error) {
-	loggerTag := "user.newUserRepository"
+	loggerTag := "user.repository.newUserRepository"
 
 	repoLogger.Info(loggerTag, "Initializing the user repository")
 

@@ -1,36 +1,45 @@
 package configs
 
 import (
+	"os"
+	"strconv"
 	"time"
-
-	"github.com/spf13/viper"
 )
 
 type Config struct {
-	ServerEnv  string `mapstructure:"SERVER_ENV"`
-	ServerPort string `mapstructure:"SERVER_PORT"`
+	ServerPort int
 
-	PostgresDSN          string `mapstructure:"POSTGRES_DSN"`
-	PostgresMigrationDSN string `mapstructure:"POSTGRES_MIGRATION_DSN"`
+	PostgresDSN          string
+	PostgresMigrationDSN string
 
-	RedisPassword string `mapstructure:"REDIS_PASSWORD"`
-	RedisURI      string `mapstructure:"REDIS_URI"`
+	RedisPassword string
+	RedisURI      string
 
-	AccessTokenPrivateKey string        `mapstructure:"ACCESS_TOKEN_PRIVATE_KEY"`
-	AccessTokenPublicKey  string        `mapstructure:"ACCESS_TOKEN_PUBLIC_KEY"`
-	AccessTokenExpiresIn  time.Duration `mapstructure:"ACCESS_TOKEN_EXPIRES_IN"`
+	AccessTokenPrivateKey string
+	AccessTokenPublicKey  string
+	AccessTokenExpiresIn  time.Duration
 
-	RefreshTokenPrivateKey string        `mapstructure:"REFRESH_TOKEN_PRIVATE_KEY"`
-	RefreshTokenPublicKey  string        `mapstructure:"REFRESH_TOKEN_PUBLIC_KEY"`
-	RefreshTokenExpiresIn  time.Duration `mapstructure:"REFRESH_TOKEN_EXPIRES_IN"`
+	RefreshTokenPrivateKey string
+	RefreshTokenPublicKey  string
+	RefreshTokenExpiresIn  time.Duration
 }
 
-func Load() (config Config, err error) {
-	viper.AutomaticEnv()
+func Load() (cfg Config) {
+	cfg.ServerPort, _ = strconv.Atoi(os.Getenv("SERVER_PORT"))
 
-	if err = viper.Unmarshal(&config); err != nil {
-		return
-	}
+	cfg.PostgresDSN = os.Getenv("POSTGRES_DSN")
+	cfg.PostgresMigrationDSN = os.Getenv("POSTGRES_MIGRATION_DSN")
 
-	return
+	cfg.RedisPassword = os.Getenv("REDIS_PASSWORD")
+	cfg.RedisURI = os.Getenv("REDIS_URI")
+
+	cfg.AccessTokenPrivateKey = os.Getenv("ACCESS_TOKEN_PRIVATE_KEY")
+	cfg.AccessTokenPublicKey = os.Getenv("ACCESS_TOKEN_PUBLIC_KEY")
+	cfg.AccessTokenExpiresIn, _ = time.ParseDuration(os.Getenv("ACCESS_TOKEN_EXPIRES_IN"))
+
+	cfg.RefreshTokenPrivateKey = os.Getenv("REFRESH_TOKEN_PRIVATE_KEY")
+	cfg.RefreshTokenPublicKey = os.Getenv("REFRESH_TOKEN_PUBLIC_KEY")
+	cfg.RefreshTokenExpiresIn, _ = time.ParseDuration(os.Getenv("REFRESH_TOKEN_EXPIRES_IN"))
+
+	return cfg
 }

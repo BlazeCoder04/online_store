@@ -40,7 +40,9 @@ func (m *Migrator) Up() error {
 
 	if err := migration.Up(); err != nil {
 		if errors.Is(err, migrate.ErrNoChange) {
-			m.logger.Info(loggerTag, "No migrations to apply")
+			m.logger.Warn(loggerTag, "No migrations to apply")
+
+			return nil
 		}
 
 		return fmt.Errorf("Migration error: %v", err)

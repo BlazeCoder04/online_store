@@ -17,9 +17,9 @@ type TokenRepository struct {
 	cfg         *configs.Config
 }
 
-const loggerTag = "constructor.token.repository"
-
 func NewTokenRepository(repoLogger logger.Logger, cfg *configs.Config) (domain.TokenRepository, error) {
+	loggerTag := "token.repository.newTokenRepository"
+
 	repoLogger.Info(loggerTag, "Initializing the token repository")
 
 	repoLogger.Info(loggerTag, "Initializing redis client")
