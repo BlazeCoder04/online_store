@@ -1,7 +1,9 @@
 package jwt
 
 import (
+	"crypto/rsa"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/BlazeCoder04/online_store/libs/jwt/parse"
@@ -44,6 +46,10 @@ func Verify(token string, publicKey string) (jwt.MapClaims, error) {
 		return key, nil
 	})
 	if err != nil {
+		if strings.Contains(err.Error(), rsa.ErrVerification.Error()) {
+			return nil, ErrTokenInvalid
+		}
+
 		return nil, err
 	}
 
