@@ -12,6 +12,8 @@ github.com/BlazeCoder04/online_store/libs/jwt v0.0.0-20250707131706-1f7778110c25
 github.com/BlazeCoder04/online_store/libs/jwt v0.0.0-20250707131706-1f7778110c25/go.mod h1:yLuV92wmbSBPYIgeuQJGHFPOALOJm1Fs0ygxzv9Kzj0=
 github.com/BlazeCoder04/online_store/libs/jwt v0.0.0-20250709080329-e8b74b76cf6f h1:VyFYOPCIdLjFcWJ9iwebauedixAyTe0syrAP5V2VuAc=
 github.com/BlazeCoder04/online_store/libs/jwt v0.0.0-20250709080329-e8b74b76cf6f/go.mod h1:yLuV92wmbSBPYIgeuQJGHFPOALOJm1Fs0ygxzv9Kzj0=
+github.com/BlazeCoder04/online_store/libs/jwt v0.0.0-20250709083143-c48ea0818f6e h1:d4p4Dt5vXhmtI//KH2ESdigQvQgHL3UwYrBBWL6qu00=
+github.com/BlazeCoder04/online_store/libs/jwt v0.0.0-20250709083143-c48ea0818f6e/go.mod h1:yLuV92wmbSBPYIgeuQJGHFPOALOJm1Fs0ygxzv9Kzj0=
 github.com/BlazeCoder04/online_store/libs/logger v0.0.0-20250705213821-fae52fea882c h1:RodMP+WBXITdjB+e2uBSEzhT5yh5hepScsBMxG2CRg4=
 github.com/BlazeCoder04/online_store/libs/logger v0.0.0-20250705213821-fae52fea882c/go.mod h1:L391o518tSKOE5u4SK6xPO9C6KPsYZAFDDo7CpLXVQA=
 github.com/BlazeCoder04/online_store/libs/validate v0.0.0-20250707131706-1f7778110c25 h1:UsBvraa8dlNN24pAdNK5507jLoRTR9ranRiz38gTuL4=
