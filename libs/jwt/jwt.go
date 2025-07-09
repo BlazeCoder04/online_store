@@ -1,7 +1,6 @@
 package jwt
 
 import (
-	"crypto/rsa"
 	"errors"
 	"time"
 
@@ -14,10 +13,6 @@ var ErrTokenInvalid = errors.New("token.invalid")
 func Create(ttl time.Duration, userID, userRole, privateKey string) (string, error) {
 	key, err := parse.ParsePrivateKey(privateKey)
 	if err != nil {
-		if errors.Is(err, rsa.ErrVerification) {
-			return "", ErrTokenInvalid
-		}
-
 		return "", err
 	}
 
@@ -38,10 +33,6 @@ func Create(ttl time.Duration, userID, userRole, privateKey string) (string, err
 func Verify(token string, publicKey string) (jwt.MapClaims, error) {
 	key, err := parse.ParsePublicKey(publicKey)
 	if err != nil {
-		if errors.Is(err, rsa.ErrVerification) {
-			return nil, ErrTokenInvalid
-		}
-
 		return nil, err
 	}
 
