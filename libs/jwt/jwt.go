@@ -2,6 +2,8 @@ package jwt
 
 import (
 	"errors"
+	"fmt"
+	"log"
 	"time"
 
 	"github.com/BlazeCoder04/online_store/libs/jwt/parse"
@@ -33,6 +35,7 @@ func Create(ttl time.Duration, userID, userRole, privateKey string) (string, err
 func Verify(token string, publicKey string) (jwt.MapClaims, error) {
 	key, err := parse.ParsePublicKey(publicKey)
 	if err != nil {
+		log.Println(fmt.Sprintf("[%s] %v", "parse public key", err))
 		return nil, err
 	}
 
@@ -44,6 +47,7 @@ func Verify(token string, publicKey string) (jwt.MapClaims, error) {
 		return key, nil
 	})
 	if err != nil {
+		log.Println(fmt.Sprintf("[%s] %v", "jwt parse", err))
 		return nil, err
 	}
 
