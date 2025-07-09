@@ -17,18 +17,10 @@ func decodePEMFromBase64(encoded string) ([]byte, error) {
 func ParsePrivateKey(privateKey string) (*rsa.PrivateKey, error) {
 	decoded, err := decodePEMFromBase64(privateKey)
 	if err != nil {
-		if errors.Is(err, rsa.ErrVerification) {
-			return nil, ErrTokenInvalid
-		}
-
 		return nil, err
 	}
 
-	return jwt.ParseRSAPrivateKeyFromPEM(decoded)
-}
-
-func ParsePublicKey(publicKey string) (*rsa.PublicKey, error) {
-	decoded, err := decodePEMFromBase64(publicKey)
+	key, err := jwt.ParseRSAPrivateKeyFromPEM(decoded)
 	if err != nil {
 		if errors.Is(err, rsa.ErrVerification) {
 			return nil, ErrTokenInvalid
@@ -37,5 +29,23 @@ func ParsePublicKey(publicKey string) (*rsa.PublicKey, error) {
 		return nil, err
 	}
 
-	return jwt.ParseRSAPublicKeyFromPEM(decoded)
+	return key, nil
+}
+
+func ParsePublicKey(publicKey string) (*rsa.PublicKey, error) {
+	decoded, err := decodePEMFromBase64(publicKey)
+	if err != nil {
+		return nil, err
+	}
+
+	key, err := jwt.ParseRSAPublicKeyFromPEM(decoded)
+	if err != nil {
+		if errors.Is(err, rsa.ErrVerification) {
+			return nil, ErrTokenInvalid
+		}
+
+		return nil, err
+	}
+
+	return key, nil
 }
