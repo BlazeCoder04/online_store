@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -48,13 +49,46 @@ func NewTokenRepository(repoLogger logger.Logger, cfg *configs.Config) (domain.T
 }
 
 func (r *TokenRepository) Set(ctx context.Context, userID, refreshToken string, expiresIn time.Duration) error {
-	return r.redisClient.Set(ctx, fmt.Sprintf("refresh_token:%s", userID), refreshToken, expiresIn).Err()
+	loggerTag := "token.repository.set"
+
+	if err := r.redisClient.Set(ctx, fmt.Sprintf("refresh_token:%s", userID), refreshToken, expiresIn).Err(); err != nil {
+		r.logger.Error(loggerTag, fmt.Sprintf("failed set token in redis: %v", err))
+
+		return err
+	}
+
+	return nil
 }
 
 func (r *TokenRepository) Get(ctx context.Context, userID string) (string, error) {
-	return r.redisClient.Get(ctx, fmt.Sprintf("refresh_token:%s", userID)).Result()
+	loggerTag := "token.repository.get"
+
+	refreshToken, err := r.redisClient.Get(ctx, fmt.Sprintf("refresh_token:%s", userID)).Result()
+	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			return "", ErrTokenNotFound
+		}
+
+		r.logger.Error(loggerTag, fmt.Sprintf("failed get token from redis: %v", err))
+
+		return "", err
+	}
+
+	return refreshToken, nil
 }
 
 func (r *TokenRepository) Del(ctx context.Context, userID string) error {
-	return r.redisClient.Del(ctx, fmt.Sprintf("refresh_token:%s", userID)).Err()
+	loggerTag := "token.repository.del"
+
+	if err := r.redisClient.Del(ctx, fmt.Sprintf("refresh_token:%s", userID)).Err(); err != nil {
+		if errors.Is(err, redis.Nil) {
+			return ErrTokenNotFound
+		}
+
+		r.logger.Error(loggerTag, fmt.Sprintf("failed del token from redis: %v", err))
+
+		return err
+	}
+
+	return nil
 }
