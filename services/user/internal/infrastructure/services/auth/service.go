@@ -13,6 +13,7 @@ import (
 	"github.com/BlazeCoder04/online_store/services/user/internal/domain/models"
 	domainRepo "github.com/BlazeCoder04/online_store/services/user/internal/domain/ports/repositories"
 	domainService "github.com/BlazeCoder04/online_store/services/user/internal/domain/ports/services"
+	"github.com/go-redis/redis/v8"
 	"github.com/jackc/pgx/v5"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -153,6 +154,10 @@ func (s *AuthService) RefreshToken(ctx context.Context, refreshToken string) (st
 
 	storedRefreshToken, err := s.tokenRepo.Get(ctx, userID)
 	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			return "", ErrTokenInvalid
+		}
+
 		s.logger.Error(loggerTag, fmt.Sprintf("failed get refresh token to redis: %v", err))
 
 		return "", err
@@ -201,6 +206,10 @@ func (s *AuthService) Logout(ctx context.Context, accessToken string) error {
 
 	refreshToken, err := s.tokenRepo.Get(ctx, userID)
 	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			return ErrTokenInvalid
+		}
+
 		s.logger.Error(loggerTag, fmt.Sprintf("failed get refresh token to redis: %v", err))
 
 		return err
