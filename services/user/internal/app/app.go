@@ -7,7 +7,7 @@ import (
 	"github.com/BlazeCoder04/online_store/services/user/configs"
 	domain "github.com/BlazeCoder04/online_store/services/user/internal/domain/ports"
 	server "github.com/BlazeCoder04/online_store/services/user/internal/infrastructure"
-	tokenRepo "github.com/BlazeCoder04/online_store/services/user/internal/infrastructure/repositories/token"
+	tokenAdapter "github.com/BlazeCoder04/online_store/services/user/internal/infrastructure/adapters/cache/redis/token"
 	userRepo "github.com/BlazeCoder04/online_store/services/user/internal/infrastructure/repositories/user"
 	authService "github.com/BlazeCoder04/online_store/services/user/internal/infrastructure/services/auth"
 	authHandler "github.com/BlazeCoder04/online_store/services/user/internal/interfaces/handlers/auth"
@@ -29,12 +29,12 @@ func NewApplication(logger logger.Logger, cfg *configs.Config) (domain.Applicati
 		return nil, fmt.Errorf("error initializing user repository: %v", err)
 	}
 
-	tokenRepository, err := tokenRepo.NewTokenRepository(logger, cfg)
+	tokenAdapter, err := tokenAdapter.NewTokenAdapter(logger, cfg)
 	if err != nil {
 		return nil, fmt.Errorf("error initializing token repository: %v", err)
 	}
 
-	authService, err := authService.NewAuthService(userRepository, tokenRepository, logger, cfg)
+	authService, err := authService.NewAuthService(userRepository, tokenAdapter, logger, cfg)
 	if err != nil {
 		return nil, fmt.Errorf("error initializing auth service: %v", err)
 	}
