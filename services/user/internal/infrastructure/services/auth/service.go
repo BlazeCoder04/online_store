@@ -11,6 +11,7 @@ import (
 	"github.com/BlazeCoder04/online_store/libs/logger"
 	"github.com/BlazeCoder04/online_store/services/user/configs"
 	"github.com/BlazeCoder04/online_store/services/user/internal/domain/models"
+	domainAdapter "github.com/BlazeCoder04/online_store/services/user/internal/domain/ports/adapters/cache/redis"
 	domainRepo "github.com/BlazeCoder04/online_store/services/user/internal/domain/ports/repositories"
 	domainService "github.com/BlazeCoder04/online_store/services/user/internal/domain/ports/services"
 	"github.com/go-redis/redis/v8"
@@ -19,13 +20,13 @@ import (
 )
 
 type AuthService struct {
-	userRepo  domainRepo.UserRepository
-	tokenRepo domainRepo.TokenRepository
-	logger    logger.Logger
-	cfg       *configs.Config
+	userRepo     domainRepo.UserRepository
+	tokenAdapter domainAdapter.TokenAdapter
+	logger       logger.Logger
+	cfg          *configs.Config
 }
 
-func NewAuthService(userRepo domainRepo.UserRepository, tokenRepo domainRepo.TokenRepository, logger logger.Logger, cfg *configs.Config) (domainService.AuthService, error) {
+func NewAuthService(userRepo domainRepo.UserRepository, tokenAdapter domainAdapter.TokenAdapter, logger logger.Logger, cfg *configs.Config) (domainService.AuthService, error) {
 	loggerTag := "auth.service.newAuthService"
 
 	logger.Info(loggerTag, "Initializing auth service")
@@ -33,7 +34,7 @@ func NewAuthService(userRepo domainRepo.UserRepository, tokenRepo domainRepo.Tok
 
 	return &AuthService{
 		userRepo,
-		tokenRepo,
+		tokenAdapter,
 		logger,
 		cfg,
 	}, nil
@@ -56,7 +57,7 @@ func (s *AuthService) generateAndStoreTokens(ctx context.Context, userID, userRo
 		return "", "", err
 	}
 
-	if err = s.tokenRepo.Set(ctx, userID, refreshToken, s.cfg.RefreshTokenExpiresIn); err != nil {
+	if err = s.tokenAdapter.Set(ctx, userID, refreshToken, s.cfg.RefreshTokenExpiresIn); err != nil {
 		s.logger.Error(loggerTag, fmt.Sprintf("failed add refresh token to redis: %v", err))
 
 		return "", "", err
@@ -152,7 +153,7 @@ func (s *AuthService) RefreshToken(ctx context.Context, refreshToken string) (st
 
 	userID := claims["sub"].(string)
 
-	storedRefreshToken, err := s.tokenRepo.Get(ctx, userID)
+	storedRefreshToken, err := s.tokenAdapter.Get(ctx, userID)
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			return "", ErrTokenInvalid
@@ -204,7 +205,7 @@ func (s *AuthService) Logout(ctx context.Context, accessToken string) error {
 
 	userID := accessTokenClaims["sub"].(string)
 
-	refreshToken, err := s.tokenRepo.Get(ctx, userID)
+	refreshToken, err := s.tokenAdapter.Get(ctx, userID)
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			return ErrTokenInvalid
@@ -226,7 +227,7 @@ func (s *AuthService) Logout(ctx context.Context, accessToken string) error {
 		return err
 	}
 
-	if err = s.tokenRepo.Del(ctx, userID); err != nil {
+	if err = s.tokenAdapter.Del(ctx, userID); err != nil {
 		s.logger.Error(loggerTag, fmt.Sprintf("failed delete refresh token to redis: %v", err))
 
 		return err
