@@ -87,14 +87,14 @@ func (s *ProfileService) Update(ctx context.Context, args *domainService.UpdateP
 		hashedPassword = &hashed
 	}
 
-	newUser, err := s.userRepo.Update(ctx, args.UserID, args.NewEmail, hashedPassword, args.NewFirstName, args.NewLastName)
+	updatedUser, err := s.userRepo.Update(ctx, args.UserID, args.NewEmail, hashedPassword, args.NewFirstName, args.NewLastName)
 	if err != nil {
 		s.logger.Error(loggerTag, fmt.Sprintf("failed update user: %v", err))
 
 		return nil, err
 	}
 
-	return newUser, nil
+	return updatedUser, nil
 }
 
 func (s *ProfileService) Delete(ctx context.Context, userID, password string) error {

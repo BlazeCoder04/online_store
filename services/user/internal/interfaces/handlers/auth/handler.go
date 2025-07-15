@@ -10,7 +10,6 @@ import (
 	"github.com/BlazeCoder04/online_store/libs/validate"
 	"github.com/BlazeCoder04/online_store/services/user/configs"
 	domain "github.com/BlazeCoder04/online_store/services/user/internal/domain/ports/services"
-	converter "github.com/BlazeCoder04/online_store/services/user/internal/interfaces/converter/auth"
 	desc "github.com/BlazeCoder04/online_store/services/user/pkg/auth/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -70,7 +69,7 @@ func (h *AuthHandler) Login(ctx context.Context, req *desc.LoginRequest) (*desc.
 	}
 
 	return &desc.LoginResponse{
-		Data:        converter.UserToDesc(user),
+		Data:        userToDesc(user),
 		AccessToken: accessToken,
 	}, nil
 }
@@ -102,7 +101,7 @@ func (h *AuthHandler) Register(ctx context.Context, req *desc.RegisterRequest) (
 	}
 
 	return &desc.RegisterResponse{
-		Data:        converter.UserToDesc(user),
+		Data:        userToDesc(user),
 		AccessToken: accessToken,
 	}, nil
 }

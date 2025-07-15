@@ -1,4 +1,4 @@
-package converter
+package handlers
 
 import (
 	"github.com/BlazeCoder04/online_store/services/user/internal/domain/models"
@@ -6,7 +6,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func UserToDesc(user *models.User) *desc.User {
+func userToDesc(user *models.User) *desc.User {
 	return &desc.User{
 		Id:        user.ID.String(),
 		Email:     user.Email,

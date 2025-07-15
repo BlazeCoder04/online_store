@@ -7,19 +7,22 @@ import (
 	"github.com/BlazeCoder04/online_store/libs/logger"
 	"github.com/BlazeCoder04/online_store/services/user/configs"
 	domain "github.com/BlazeCoder04/online_store/services/user/internal/domain/ports"
-	handlers "github.com/BlazeCoder04/online_store/services/user/internal/interfaces/handlers/auth"
+	auth "github.com/BlazeCoder04/online_store/services/user/internal/interfaces/handlers/auth"
+	profile "github.com/BlazeCoder04/online_store/services/user/internal/interfaces/handlers/profile"
 	authDesc "github.com/BlazeCoder04/online_store/services/user/pkg/auth/v1"
+	profileDesc "github.com/BlazeCoder04/online_store/services/user/pkg/profile/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
 type Server struct {
-	authHandler *handlers.AuthHandler
-	logger      logger.Logger
-	cfg         *configs.Config
+	authHandler    *auth.AuthHandler
+	profileHandler *profile.ProfileHandler
+	logger         logger.Logger
+	cfg            *configs.Config
 }
 
-func NewServer(authHandler *handlers.AuthHandler, logger logger.Logger, cfg *configs.Config) (domain.Server, error) {
+func NewServer(authHandler *auth.AuthHandler, profileHandler *profile.ProfileHandler, logger logger.Logger, cfg *configs.Config) (domain.Server, error) {
 	loggerTag := "server.newServer"
 
 	logger.Info(loggerTag, "Initializing server")
@@ -27,6 +30,7 @@ func NewServer(authHandler *handlers.AuthHandler, logger logger.Logger, cfg *con
 
 	return &Server{
 		authHandler,
+		profileHandler,
 		logger,
 		cfg,
 	}, nil
@@ -43,6 +47,7 @@ func (s *Server) Run() error {
 	server := grpc.NewServer()
 
 	authDesc.RegisterAuthV1Server(server, s.authHandler)
+	profileDesc.RegisterProfileV1Server(server, s.profileHandler)
 
 	reflection.Register(server)
 
