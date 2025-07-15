@@ -29,10 +29,7 @@ service AuthV1 {
     };
   }
   rpc Logout(google.protobuf.Empty) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      post: "/v1/auth/logout"
-      body: "*"
-    };
+    option (google.api.http) = {post: "/v1/auth/logout"};
   }
 }
 

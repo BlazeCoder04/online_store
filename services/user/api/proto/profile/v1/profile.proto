@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package profile_v1;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/BlazeCoder04/online_store/services/user/pkg/profile/v1;profile_v1";
+
+service ProfileV1 {
+  rpc Get(GetRequest) returns (GetResponse) {
+    option (google.api.http) = {get: "/v1/profiles/{user_id}"};
+  }
+  rpc Update(UpdateRequest) returns (UpdateResponse) {
+    option (google.api.http) = {
+      patch: "/v1/profiles/{user_id}"
+      body: "*"
+    };
+  }
+  rpc Delete(DeleteRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/profiles/{user_id}"
+      body: "*"
+    };
+  }
+}
+
+enum UserRole {
+  USER = 0;
+  ADMIN = 1;
+}
+
+message User {
+  string id = 1;
+  string email = 2;
+  string first_name = 3;
+  string last_name = 4;
+  UserRole role = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+// Get
+message GetRequest {
+  string user_id = 1 [(buf.validate.field).string.uuid = true];
+}
+
+message GetResponse {
+  User data = 1;
+}
+
+// Update
+message UpdateRequest {
+  string user_id = 1 [(buf.validate.field).string.uuid = true];
+  string password = 2 [(buf.validate.field).string.min_len = 6];
+
+  optional string new_email = 3 [(buf.validate.field).string.email = true];
+  optional string new_password = 4 [(buf.validate.field).string.min_len = 6];
+  optional string new_first_name = 5 [(buf.validate.field).string.min_len = 3];
+  optional string new_last_name = 6 [(buf.validate.field).string.min_len = 3];
+}
+
+message UpdateResponse {
+  User data = 1;
+}
+
+// Delete
+message DeleteRequest {
+  string user_id = 1 [(buf.validate.field).string.uuid = true];
+  string password = 2 [(buf.validate.field).string.min_len = 6];
+}
