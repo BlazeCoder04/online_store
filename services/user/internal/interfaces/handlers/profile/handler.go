@@ -6,7 +6,6 @@ import (
 
 	"github.com/BlazeCoder04/online_store/libs/logger"
 	"github.com/BlazeCoder04/online_store/libs/validate"
-	"github.com/BlazeCoder04/online_store/services/user/configs"
 	domain "github.com/BlazeCoder04/online_store/services/user/internal/domain/ports/services"
 	desc "github.com/BlazeCoder04/online_store/services/user/pkg/profile/v1"
 	"google.golang.org/grpc/codes"
@@ -18,10 +17,9 @@ type ProfileHandler struct {
 	desc.UnimplementedProfileV1Server
 	profileService domain.ProfileService
 	logger         logger.Logger
-	cfg            *configs.Config
 }
 
-func NewProfileHandler(profileService domain.ProfileService, logger logger.Logger, cfg *configs.Config) (*ProfileHandler, error) {
+func NewProfileHandler(profileService domain.ProfileService, logger logger.Logger) (*ProfileHandler, error) {
 	loggerTag := "profile.handler.newAuthHandler"
 
 	logger.Info(loggerTag, "Initializing profile handler")
@@ -30,7 +28,6 @@ func NewProfileHandler(profileService domain.ProfileService, logger logger.Logge
 	return &ProfileHandler{
 		profileService: profileService,
 		logger:         logger,
-		cfg:            cfg,
 	}, nil
 }
 

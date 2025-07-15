@@ -7,7 +7,6 @@ import (
 
 	"github.com/BlazeCoder04/online_store/libs/hash"
 	"github.com/BlazeCoder04/online_store/libs/logger"
-	"github.com/BlazeCoder04/online_store/services/user/configs"
 	"github.com/BlazeCoder04/online_store/services/user/internal/domain/models"
 	domainRepo "github.com/BlazeCoder04/online_store/services/user/internal/domain/ports/repositories"
 	domainService "github.com/BlazeCoder04/online_store/services/user/internal/domain/ports/services"
@@ -18,10 +17,9 @@ import (
 type ProfileService struct {
 	userRepo domainRepo.UserRepository
 	logger   logger.Logger
-	cfg      *configs.Config
 }
 
-func NewProfileService(userRepo domainRepo.UserRepository, logger logger.Logger, cfg *configs.Config) (domainService.ProfileService, error) {
+func NewProfileService(userRepo domainRepo.UserRepository, logger logger.Logger) (domainService.ProfileService, error) {
 	loggerTag := "profile.service.newProfileService"
 
 	logger.Info(loggerTag, "Initializing profile service")
@@ -30,7 +28,6 @@ func NewProfileService(userRepo domainRepo.UserRepository, logger logger.Logger,
 	return &ProfileService{
 		userRepo,
 		logger,
-		cfg,
 	}, nil
 }
 
