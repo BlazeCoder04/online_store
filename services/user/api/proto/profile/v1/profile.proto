@@ -6,6 +6,7 @@ import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "user/user.proto";
 
 option go_package = "github.com/BlazeCoder04/online_store/services/user/pkg/profile/v1;profile_v1";
 
@@ -27,28 +28,13 @@ service ProfileV1 {
   }
 }
 
-enum UserRole {
-  USER = 0;
-  ADMIN = 1;
-}
-
-message User {
-  string id = 1;
-  string email = 2;
-  string first_name = 3;
-  string last_name = 4;
-  UserRole role = 5;
-  google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
-}
-
 // Get
 message GetRequest {
   string user_id = 1 [(buf.validate.field).string.uuid = true];
 }
 
 message GetResponse {
-  User data = 1;
+  user.User data = 1;
 }
 
 // Update
@@ -63,7 +49,7 @@ message UpdateRequest {
 }
 
 message UpdateResponse {
-  User data = 1;
+  user.User data = 1;
 }
 
 // Delete
