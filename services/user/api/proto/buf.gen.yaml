@@ -13,6 +13,7 @@ plugins:
     - name: grpc-gateway
       out: ../../pkg
       opt:
+          - allow_delete_body=true
           - paths=source_relative
 
     - name: validate

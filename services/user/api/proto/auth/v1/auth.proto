@@ -6,6 +6,7 @@ import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "user/user.proto";
 
 option go_package = "github.com/BlazeCoder04/online_store/services/user/pkg/auth/v1;auth_v1";
 
@@ -29,26 +30,8 @@ service AuthV1 {
     };
   }
   rpc Logout(google.protobuf.Empty) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      post: "/v1/auth/logout"
-      body: "*"
-    };
+    option (google.api.http) = {post: "/v1/auth/logout"};
   }
-}
-
-enum UserRole {
-  USER = 0;
-  ADMIN = 1;
-}
-
-message User {
-  string id = 1;
-  string email = 2;
-  string first_name = 3;
-  string last_name = 4;
-  UserRole role = 5;
-  google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
 }
 
 // Login
@@ -58,7 +41,7 @@ message LoginRequest {
 }
 
 message LoginResponse {
-  User data = 1;
+  user.User data = 1;
   string access_token = 2;
 }
 
@@ -71,7 +54,7 @@ message RegisterRequest {
 }
 
 message RegisterResponse {
-  User data = 1;
+  user.User data = 1;
   string access_token = 2;
 }
 

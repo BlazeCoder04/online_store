@@ -1,8 +1,8 @@
-package converter
+package converters
 
 import (
 	"github.com/BlazeCoder04/online_store/services/user/internal/domain/models"
-	desc "github.com/BlazeCoder04/online_store/services/user/pkg/auth/v1"
+	desc "github.com/BlazeCoder04/online_store/services/user/pkg/user"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 

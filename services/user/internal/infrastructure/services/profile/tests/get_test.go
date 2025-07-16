@@ -5,13 +5,15 @@ import (
 	"testing"
 	"time"
 
+	"github.com/BlazeCoder04/online_store/libs/hash"
 	"github.com/BlazeCoder04/online_store/libs/jwt"
 	"github.com/BlazeCoder04/online_store/libs/logger"
 	"github.com/BlazeCoder04/online_store/services/user/configs"
 	"github.com/BlazeCoder04/online_store/services/user/internal/domain/models"
 	mocksAdapter "github.com/BlazeCoder04/online_store/services/user/internal/domain/ports/adapters/cache/redis/mocks"
 	mocksRepo "github.com/BlazeCoder04/online_store/services/user/internal/domain/ports/repositories/mocks"
-	services "github.com/BlazeCoder04/online_store/services/user/internal/infrastructure/services/auth"
+	services "github.com/BlazeCoder04/online_store/services/user/internal/infrastructure/services/profile"
+	"github.com/brianvoe/gofakeit/v6"
 	"github.com/go-redis/redis/v8"
 	"github.com/golang/mock/gomock"
 	"github.com/google/uuid"
@@ -19,23 +21,28 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAuthService_RefreshToken(t *testing.T) {
+func TestProfileService_Get(t *testing.T) {
 	type args struct {
-		ctx          context.Context
-		refreshToken string
+		ctx         context.Context
+		userID      string
+		accessToken string
 	}
 
 	type expect struct {
-		err   error
-		token bool
+		err  error
+		user *models.User
 	}
 
 	var (
 		ctx = context.Background()
 
-		userID = uuid.New()
-		email  = "test@test.ru"
-		role   = models.UserRole
+		userID            = uuid.New()
+		email             = gofakeit.Email()
+		password          = gofakeit.Password(true, true, true, true, false, 12)
+		hashedPassword, _ = hash.HashPassword(password)
+		firstName         = gofakeit.FirstName()
+		lastName          = gofakeit.LastName()
+		role              = models.UserRole
 
 		accessTokenPrivateKey = generateRSAPrivateKeyBase64(t)
 		accessTokenPublicKey  = generateRSAPublicKeyBase64(t, accessTokenPrivateKey)
@@ -45,15 +52,22 @@ func TestAuthService_RefreshToken(t *testing.T) {
 		refreshTokenPublicKey  = generateRSAPublicKeyBase64(t, refreshTokenPrivateKey)
 		refreshTokenExpiresIn  = 10080 * time.Minute
 
+		accessToken, _  = jwt.Create(accessTokenExpiresIn, userID.String(), string(role), accessTokenPrivateKey)
 		refreshToken, _ = jwt.Create(refreshTokenExpiresIn, userID.String(), string(role), refreshTokenPrivateKey)
+
+		wrongAccessTokenPrivateKey = generateRSAPrivateKeyBase64(t)
+		wrongAccessToken, _        = jwt.Create(accessTokenExpiresIn, userID.String(), string(role), wrongAccessTokenPrivateKey)
 
 		wrongRefreshTokenPrivateKey = generateRSAPrivateKeyBase64(t)
 		wrongRefreshToken, _        = jwt.Create(refreshTokenExpiresIn, userID.String(), string(role), wrongRefreshTokenPrivateKey)
 
 		baseUser = &models.User{
-			ID:    userID,
-			Email: email,
-			Role:  role,
+			ID:        userID,
+			Email:     email,
+			Password:  hashedPassword,
+			FirstName: firstName,
+			LastName:  lastName,
+			Role:      role,
 		}
 	)
 
@@ -67,7 +81,8 @@ func TestAuthService_RefreshToken(t *testing.T) {
 			name: "success case",
 			args: args{
 				ctx,
-				refreshToken,
+				userID.String(),
+				accessToken,
 			},
 			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
 				userRepo := mocksRepo.NewMockUserRepository(ctrl)
@@ -84,74 +99,16 @@ func TestAuthService_RefreshToken(t *testing.T) {
 				return userRepo, tokenAdapter
 			},
 			expect: expect{
-				err:   nil,
-				token: true,
-			},
-		},
-		{
-			name: "token invalid case",
-			args: args{
-				ctx,
-				wrongRefreshToken,
-			},
-			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
-				userRepo := mocksRepo.NewMockUserRepository(ctrl)
-				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
-
-				return userRepo, tokenAdapter
-			},
-			expect: expect{
-				err:   services.ErrTokenInvalid,
-				token: false,
-			},
-		},
-		{
-			name: "token not found in redis case",
-			args: args{
-				ctx,
-				refreshToken,
-			},
-			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
-				userRepo := mocksRepo.NewMockUserRepository(ctrl)
-				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
-
-				tokenAdapter.EXPECT().
-					Get(ctx, userID.String()).
-					Return("", redis.Nil)
-
-				return userRepo, tokenAdapter
-			},
-			expect: expect{
-				err:   services.ErrTokenInvalid,
-				token: false,
-			},
-		},
-		{
-			name: "token mismatch case",
-			args: args{
-				ctx,
-				refreshToken,
-			},
-			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
-				userRepo := mocksRepo.NewMockUserRepository(ctrl)
-				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
-
-				tokenAdapter.EXPECT().
-					Get(ctx, userID.String()).
-					Return(wrongRefreshToken, nil)
-
-				return userRepo, tokenAdapter
-			},
-			expect: expect{
-				err:   services.ErrTokenInvalid,
-				token: false,
+				nil,
+				baseUser,
 			},
 		},
 		{
 			name: "user not found case",
 			args: args{
 				ctx,
-				refreshToken,
+				userID.String(),
+				accessToken,
 			},
 			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
 				userRepo := mocksRepo.NewMockUserRepository(ctrl)
@@ -168,8 +125,70 @@ func TestAuthService_RefreshToken(t *testing.T) {
 				return userRepo, tokenAdapter
 			},
 			expect: expect{
-				err:   services.ErrUserNotFound,
-				token: false,
+				err:  services.ErrUserNotFound,
+				user: nil,
+			},
+		},
+		{
+			name: "access token invalid case",
+			args: args{
+				ctx,
+				userID.String(),
+				wrongAccessToken,
+			},
+			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
+				userRepo := mocksRepo.NewMockUserRepository(ctrl)
+				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
+
+				return userRepo, tokenAdapter
+			},
+			expect: expect{
+				err:  services.ErrTokenInvalid,
+				user: nil,
+			},
+		},
+		{
+			name: "refresh token not found in redis case",
+			args: args{
+				ctx,
+				userID.String(),
+				accessToken,
+			},
+			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
+				userRepo := mocksRepo.NewMockUserRepository(ctrl)
+				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
+
+				tokenAdapter.EXPECT().
+					Get(ctx, userID.String()).
+					Return("", redis.Nil)
+
+				return userRepo, tokenAdapter
+			},
+			expect: expect{
+				err:  services.ErrTokenInvalid,
+				user: nil,
+			},
+		},
+		{
+			name: "refresh token invalid case",
+			args: args{
+				ctx,
+				userID.String(),
+				accessToken,
+			},
+			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
+				userRepo := mocksRepo.NewMockUserRepository(ctrl)
+				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
+
+				tokenAdapter.EXPECT().
+					Get(ctx, userID.String()).
+					Return(wrongRefreshToken, nil)
+
+				return userRepo, tokenAdapter
+			},
+			expect: expect{
+				err:  services.ErrTokenInvalid,
+				user: nil,
 			},
 		},
 	}
@@ -184,6 +203,10 @@ func TestAuthService_RefreshToken(t *testing.T) {
 
 			userRepo, tokenAdapter := tt.mock(ctrl)
 
+			log, _ := logger.NewAdapter(&logger.Config{
+				Level: logger.LevelError,
+			})
+
 			cfg := &configs.Config{
 				AccessTokenPrivateKey:  accessTokenPrivateKey,
 				AccessTokenPublicKey:   accessTokenPublicKey,
@@ -193,13 +216,9 @@ func TestAuthService_RefreshToken(t *testing.T) {
 				RefreshTokenExpiresIn:  refreshTokenExpiresIn,
 			}
 
-			log, _ := logger.NewAdapter(&logger.Config{
-				Level: logger.LevelError,
-			})
+			profileService, _ := services.NewProfileService(userRepo, tokenAdapter, log, cfg)
 
-			authService, _ := services.NewAuthService(userRepo, tokenAdapter, log, cfg)
-
-			accessToken, err := authService.RefreshToken(tt.args.ctx, tt.args.refreshToken)
+			user, err := profileService.Get(ctx, tt.args.userID, tt.args.accessToken)
 
 			if tt.expect.err != nil {
 				require.Error(t, err)
@@ -208,10 +227,11 @@ func TestAuthService_RefreshToken(t *testing.T) {
 				require.NoError(t, err)
 			}
 
-			if tt.expect.token {
-				require.NotEmpty(t, accessToken)
+			if tt.expect.user != nil {
+				require.NotNil(t, user)
+				require.Equal(t, tt.expect.user.Email, user.Email)
 			} else {
-				require.Empty(t, accessToken)
+				require.Nil(t, user)
 			}
 		})
 	}

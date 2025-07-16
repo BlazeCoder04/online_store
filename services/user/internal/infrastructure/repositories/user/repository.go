@@ -85,7 +85,7 @@ func (r *UserRepository) FindByEmail(ctx context.Context, email string) (*models
 	return &user, nil
 }
 
-func (r *UserRepository) FindByID(ctx context.Context, ID string) (*models.User, error) {
+func (r *UserRepository) FindByID(ctx context.Context, userID string) (*models.User, error) {
 	var user models.User
 
 	query := `
@@ -95,11 +95,49 @@ func (r *UserRepository) FindByID(ctx context.Context, ID string) (*models.User,
 	`
 
 	err := r.db.
-		QueryRow(ctx, query, ID).
+		QueryRow(ctx, query, userID).
 		Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.Role, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
 
 	return &user, err
+}
+
+func (r *UserRepository) Update(ctx context.Context, userID string, newEmail, newPassword, newFirstName, newLastName *string) (*models.User, error) {
+	var user models.User
+
+	query := `
+		UPDATE users
+		SET
+			email = COALESCE($2, email),
+			password = COALESCE($3, password),
+			first_name = COALESCE($4, first_name),
+			last_name = COALESCE($5, last_name),
+			updated_at = NOW()
+		WHERE id = $1
+		RETURNING id, email, password, first_name, last_name, role, created_at, updated_at
+	`
+
+	err := r.db.
+		QueryRow(ctx, query, userID, newEmail, newPassword, newFirstName, newLastName).
+		Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.Role, &user.CreatedAt, &user.UpdatedAt)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (r *UserRepository) Delete(ctx context.Context, userID string) error {
+	query := `
+		DELETE FROM users
+		WHERE id = $1
+	`
+
+	if _, err := r.db.Exec(ctx, query, userID); err != nil {
+		return err
+	}
+
+	return nil
 }

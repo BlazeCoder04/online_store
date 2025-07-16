@@ -15,7 +15,6 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.1
 	github.com/jackc/pgx/v5 v5.7.5
-	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/crypto v0.39.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250603155806-513f23925822

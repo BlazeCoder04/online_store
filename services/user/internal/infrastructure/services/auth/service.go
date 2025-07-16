@@ -29,8 +29,7 @@ type AuthService struct {
 func NewAuthService(userRepo domainRepo.UserRepository, tokenAdapter domainAdapter.TokenAdapter, logger logger.Logger, cfg *configs.Config) (domainService.AuthService, error) {
 	loggerTag := "auth.service.newAuthService"
 
-	logger.Info(loggerTag, "Initializing auth service")
-	logger.Info(loggerTag, "Successful initialization")
+	logger.Info(loggerTag, "Auth service initialized")
 
 	return &AuthService{
 		userRepo,

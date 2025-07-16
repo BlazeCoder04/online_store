@@ -8,9 +8,8 @@ import (
 
 	"github.com/BlazeCoder04/online_store/libs/logger"
 	"github.com/BlazeCoder04/online_store/libs/validate"
-	"github.com/BlazeCoder04/online_store/services/user/configs"
 	domain "github.com/BlazeCoder04/online_store/services/user/internal/domain/ports/services"
-	converter "github.com/BlazeCoder04/online_store/services/user/internal/interfaces/converter/auth"
+	"github.com/BlazeCoder04/online_store/services/user/internal/interfaces/converters"
 	desc "github.com/BlazeCoder04/online_store/services/user/pkg/auth/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -23,21 +22,18 @@ type AuthHandler struct {
 	desc.UnimplementedAuthV1Server
 	authService domain.AuthService
 	logger      logger.Logger
-	cfg         *configs.Config
 }
 
-const authPrefix = "Bearer "
+const tokenPrefix = "Bearer "
 
-func NewAuthHandler(authService domain.AuthService, logger logger.Logger, cfg *configs.Config) (*AuthHandler, error) {
+func NewAuthHandler(authService domain.AuthService, logger logger.Logger) (*AuthHandler, error) {
 	loggerTag := "auth.handler.newAuthHandler"
 
-	logger.Info(loggerTag, "Initializing auth handler")
-	logger.Info(loggerTag, "Successful initialization")
+	logger.Info(loggerTag, "Auth handler initialized")
 
 	return &AuthHandler{
 		authService: authService,
 		logger:      logger,
-		cfg:         cfg,
 	}, nil
 }
 
@@ -70,7 +66,7 @@ func (h *AuthHandler) Login(ctx context.Context, req *desc.LoginRequest) (*desc.
 	}
 
 	return &desc.LoginResponse{
-		Data:        converter.UserToDesc(user),
+		Data:        converters.UserToDesc(user),
 		AccessToken: accessToken,
 	}, nil
 }
@@ -102,7 +98,7 @@ func (h *AuthHandler) Register(ctx context.Context, req *desc.RegisterRequest) (
 	}
 
 	return &desc.RegisterResponse{
-		Data:        converter.UserToDesc(user),
+		Data:        converters.UserToDesc(user),
 		AccessToken: accessToken,
 	}, nil
 }
@@ -150,11 +146,11 @@ func (h *AuthHandler) Logout(ctx context.Context, req *emptypb.Empty) (*emptypb.
 		return nil, status.Error(codes.Unauthenticated, "header.not_provided")
 	}
 
-	if !strings.HasPrefix(authHeader[0], authPrefix) {
+	if !strings.HasPrefix(authHeader[0], tokenPrefix) {
 		return nil, status.Error(codes.Unauthenticated, "token.invalid")
 	}
 
-	accessToken := strings.TrimPrefix(authHeader[0], authPrefix)
+	accessToken := strings.TrimPrefix(authHeader[0], tokenPrefix)
 
 	err := h.authService.Logout(ctx, accessToken)
 	if err != nil {

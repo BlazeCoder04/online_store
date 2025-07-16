@@ -10,7 +10,9 @@ import (
 	tokenAdapter "github.com/BlazeCoder04/online_store/services/user/internal/infrastructure/adapters/cache/redis/token"
 	userRepo "github.com/BlazeCoder04/online_store/services/user/internal/infrastructure/repositories/user"
 	authService "github.com/BlazeCoder04/online_store/services/user/internal/infrastructure/services/auth"
+	profileService "github.com/BlazeCoder04/online_store/services/user/internal/infrastructure/services/profile"
 	authHandler "github.com/BlazeCoder04/online_store/services/user/internal/interfaces/handlers/auth"
+	profileHandler "github.com/BlazeCoder04/online_store/services/user/internal/interfaces/handlers/profile"
 )
 
 type Application struct {
@@ -39,12 +41,22 @@ func NewApplication(logger logger.Logger, cfg *configs.Config) (domain.Applicati
 		return nil, fmt.Errorf("error initializing auth service: %v", err)
 	}
 
-	authHandler, err := authHandler.NewAuthHandler(authService, logger, cfg)
+	profileService, err := profileService.NewProfileService(userRepository, tokenAdapter, logger, cfg)
+	if err != nil {
+		return nil, fmt.Errorf("error initializing profile service: %v", err)
+	}
+
+	authHandler, err := authHandler.NewAuthHandler(authService, logger)
 	if err != nil {
 		return nil, fmt.Errorf("error initializing auth handler: %v", err)
 	}
 
-	server, err := server.NewServer(authHandler, logger, cfg)
+	profileHandler, err := profileHandler.NewProfileHandler(profileService, logger)
+	if err != nil {
+		return nil, fmt.Errorf("error initializing profile handler: %v", err)
+	}
+
+	server, err := server.NewServer(authHandler, profileHandler, logger, cfg)
 	if err != nil {
 		return nil, fmt.Errorf("error initializing server: %v", err)
 	}

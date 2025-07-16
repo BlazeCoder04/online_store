@@ -61,7 +61,7 @@ func TestAuthService_Register(t *testing.T) {
 	tests := []struct {
 		name                   string
 		args                   args
-		setupMocks             func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter)
+		mock                   func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter)
 		expect                 expect
 		accessTokenPrivateKey  string
 		refreshTokenPrivateKey string
@@ -75,7 +75,7 @@ func TestAuthService_Register(t *testing.T) {
 				firstName: firstName,
 				lastName:  lastName,
 			},
-			setupMocks: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
+			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
 				userRepo := mocksRepo.NewMockUserRepository(ctrl)
 				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
 
@@ -110,7 +110,7 @@ func TestAuthService_Register(t *testing.T) {
 				firstName: firstName,
 				lastName:  lastName,
 			},
-			setupMocks: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
+			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
 				userRepo := mocksRepo.NewMockUserRepository(ctrl)
 				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
 
@@ -138,7 +138,7 @@ func TestAuthService_Register(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			userRepo, tokenAdapter := tt.setupMocks(ctrl)
+			userRepo, tokenAdapter := tt.mock(ctrl)
 
 			cfg := &configs.Config{
 				AccessTokenPrivateKey:  accessTokenPrivateKey,
