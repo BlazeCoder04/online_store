@@ -58,10 +58,10 @@ func TestAuthService_RefreshToken(t *testing.T) {
 	)
 
 	tests := []struct {
-		name       string
-		args       args
-		setupMocks func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter)
-		expect     expect
+		name   string
+		args   args
+		mock   func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter)
+		expect expect
 	}{
 		{
 			name: "success case",
@@ -69,7 +69,7 @@ func TestAuthService_RefreshToken(t *testing.T) {
 				ctx,
 				refreshToken,
 			},
-			setupMocks: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
+			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
 				userRepo := mocksRepo.NewMockUserRepository(ctrl)
 				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
 
@@ -94,7 +94,7 @@ func TestAuthService_RefreshToken(t *testing.T) {
 				ctx,
 				wrongRefreshToken,
 			},
-			setupMocks: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
+			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
 				userRepo := mocksRepo.NewMockUserRepository(ctrl)
 				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
 
@@ -111,7 +111,7 @@ func TestAuthService_RefreshToken(t *testing.T) {
 				ctx,
 				refreshToken,
 			},
-			setupMocks: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
+			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
 				userRepo := mocksRepo.NewMockUserRepository(ctrl)
 				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
 
@@ -132,7 +132,7 @@ func TestAuthService_RefreshToken(t *testing.T) {
 				ctx,
 				refreshToken,
 			},
-			setupMocks: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
+			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
 				userRepo := mocksRepo.NewMockUserRepository(ctrl)
 				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
 
@@ -153,7 +153,7 @@ func TestAuthService_RefreshToken(t *testing.T) {
 				ctx,
 				refreshToken,
 			},
-			setupMocks: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
+			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
 				userRepo := mocksRepo.NewMockUserRepository(ctrl)
 				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
 
@@ -182,7 +182,7 @@ func TestAuthService_RefreshToken(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			userRepo, tokenAdapter := tt.setupMocks(ctrl)
+			userRepo, tokenAdapter := tt.mock(ctrl)
 
 			cfg := &configs.Config{
 				AccessTokenPrivateKey:  accessTokenPrivateKey,

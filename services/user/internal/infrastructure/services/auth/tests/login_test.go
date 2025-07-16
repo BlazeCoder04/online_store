@@ -63,7 +63,7 @@ func TestAuthService_Login(t *testing.T) {
 	tests := []struct {
 		name                   string
 		args                   args
-		setupMocks             func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter)
+		mock                   func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter)
 		expect                 expect
 		accessTokenPrivateKey  string
 		refreshTokenPrivateKey string
@@ -75,7 +75,7 @@ func TestAuthService_Login(t *testing.T) {
 				email:    correctEmail,
 				password: correctPassword,
 			},
-			setupMocks: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
+			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
 				userRepo := mocksRepo.NewMockUserRepository(ctrl)
 				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
 
@@ -104,7 +104,7 @@ func TestAuthService_Login(t *testing.T) {
 				email:    wrongEmail,
 				password: correctPassword,
 			},
-			setupMocks: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
+			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
 				userRepo := mocksRepo.NewMockUserRepository(ctrl)
 				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
 
@@ -129,7 +129,7 @@ func TestAuthService_Login(t *testing.T) {
 				email:    correctEmail,
 				password: wrongPassword,
 			},
-			setupMocks: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
+			mock: func(ctrl *gomock.Controller) (*mocksRepo.MockUserRepository, *mocksAdapter.MockTokenAdapter) {
 				userRepo := mocksRepo.NewMockUserRepository(ctrl)
 				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
 
@@ -157,7 +157,7 @@ func TestAuthService_Login(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			userRepo, tokenAdapter := tt.setupMocks(ctrl)
+			userRepo, tokenAdapter := tt.mock(ctrl)
 
 			cfg := &configs.Config{
 				AccessTokenPrivateKey:  tt.accessTokenPrivateKey,

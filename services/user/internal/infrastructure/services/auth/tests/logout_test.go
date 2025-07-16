@@ -52,10 +52,10 @@ func TestAuthService_Logout(t *testing.T) {
 	)
 
 	tests := []struct {
-		name       string
-		args       args
-		setupMocks func(ctrl *gomock.Controller) *mocksAdapter.MockTokenAdapter
-		expect     expect
+		name   string
+		args   args
+		mock   func(ctrl *gomock.Controller) *mocksAdapter.MockTokenAdapter
+		expect expect
 	}{
 		{
 			name: "success case",
@@ -63,7 +63,7 @@ func TestAuthService_Logout(t *testing.T) {
 				ctx,
 				accessToken,
 			},
-			setupMocks: func(ctrl *gomock.Controller) *mocksAdapter.MockTokenAdapter {
+			mock: func(ctrl *gomock.Controller) *mocksAdapter.MockTokenAdapter {
 				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
 
 				tokenAdapter.EXPECT().
@@ -86,7 +86,7 @@ func TestAuthService_Logout(t *testing.T) {
 				ctx,
 				wrongAccessToken,
 			},
-			setupMocks: func(ctrl *gomock.Controller) *mocksAdapter.MockTokenAdapter {
+			mock: func(ctrl *gomock.Controller) *mocksAdapter.MockTokenAdapter {
 				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
 
 				return tokenAdapter
@@ -101,7 +101,7 @@ func TestAuthService_Logout(t *testing.T) {
 				ctx,
 				accessToken,
 			},
-			setupMocks: func(ctrl *gomock.Controller) *mocksAdapter.MockTokenAdapter {
+			mock: func(ctrl *gomock.Controller) *mocksAdapter.MockTokenAdapter {
 				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
 
 				tokenAdapter.EXPECT().
@@ -120,7 +120,7 @@ func TestAuthService_Logout(t *testing.T) {
 				ctx,
 				accessToken,
 			},
-			setupMocks: func(ctrl *gomock.Controller) *mocksAdapter.MockTokenAdapter {
+			mock: func(ctrl *gomock.Controller) *mocksAdapter.MockTokenAdapter {
 				tokenAdapter := mocksAdapter.NewMockTokenAdapter(ctrl)
 
 				tokenAdapter.EXPECT().
@@ -143,7 +143,7 @@ func TestAuthService_Logout(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			tokenAdapter := tt.setupMocks(ctrl)
+			tokenAdapter := tt.mock(ctrl)
 
 			cfg := &configs.Config{
 				AccessTokenPrivateKey:  accessTokenPrivateKey,
