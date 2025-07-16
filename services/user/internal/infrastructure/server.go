@@ -25,8 +25,7 @@ type Server struct {
 func NewServer(authHandler *auth.AuthHandler, profileHandler *profile.ProfileHandler, logger logger.Logger, cfg *configs.Config) (domain.Server, error) {
 	loggerTag := "server.newServer"
 
-	logger.Info(loggerTag, "Initializing server")
-	logger.Info(loggerTag, "Successful initialization")
+	logger.Info(loggerTag, "Server initialized")
 
 	return &Server{
 		authHandler,
