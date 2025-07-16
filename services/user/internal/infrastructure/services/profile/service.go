@@ -72,8 +72,21 @@ func (s *ProfileService) Update(ctx context.Context, args *domainService.UpdateP
 		return nil, err
 	}
 
+	switch {
+	case args.NewEmail != nil && *args.NewEmail == user.Email:
+		return nil, ErrEmailUnchanged
+	case args.NewFirstName != nil && *args.NewFirstName == user.FirstName:
+		return nil, ErrFirstNameUnchanged
+	case args.NewLastName != nil && *args.NewLastName == user.LastName:
+		return nil, ErrLastNameUnchanged
+	}
+
 	var hashedPassword *string
 	if args.NewPassword != nil {
+		if passCheckErr := hash.ComparePassword(user.Password, *args.NewPassword); passCheckErr == nil {
+			return nil, ErrPasswordUnchanged
+		}
+
 		hashed, hashErr := hash.HashPassword(*args.NewPassword)
 		if hashErr != nil {
 			s.logger.Error(loggerTag, fmt.Sprintf("failed hash password: %v", err))
