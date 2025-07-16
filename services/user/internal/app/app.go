@@ -41,12 +41,12 @@ func NewApplication(logger logger.Logger, cfg *configs.Config) (domain.Applicati
 		return nil, fmt.Errorf("error initializing auth service: %v", err)
 	}
 
-	profileService, err := profileService.NewProfileService(userRepository, logger)
+	profileService, err := profileService.NewProfileService(userRepository, tokenAdapter, logger, cfg)
 	if err != nil {
 		return nil, fmt.Errorf("error initializing profile service: %v", err)
 	}
 
-	authHandler, err := authHandler.NewAuthHandler(authService, logger, cfg)
+	authHandler, err := authHandler.NewAuthHandler(authService, logger)
 	if err != nil {
 		return nil, fmt.Errorf("error initializing auth handler: %v", err)
 	}

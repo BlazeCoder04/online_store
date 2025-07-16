@@ -7,16 +7,19 @@ import (
 )
 
 type UpdateProfileArgs struct {
-	UserID       string
+	UserID   string
+	Password string
+
 	NewEmail     *string
-	Password     string
 	NewPassword  *string
 	NewFirstName *string
 	NewLastName  *string
+
+	AccessToken string
 }
 
 type ProfileService interface {
-	Get(ctx context.Context, userID string) (*models.User, error)
+	Get(ctx context.Context, userID, accessToken string) (*models.User, error)
 	Update(ctx context.Context, args *UpdateProfileArgs) (*models.User, error)
-	Delete(ctx context.Context, userID, password string) error
+	Delete(ctx context.Context, userID, password, accessToken string) error
 }
